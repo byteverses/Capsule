@@ -123,19 +123,15 @@ public class MODI {
                                                         .get();
             double minAssign = this.initResults.get(minPosition);
             this.initResults.put(negativePosition, minAssign);
-            IntStream.range(1, closedPath.size()).forEach(index -> {
-                KV<Integer, Integer> p = closedPath.get(index);
-                if(index % 2 == 1) {
-                    this.initResults.merge(p, minAssign, (v1, v2) -> v1 + v2);
-                }
-                else {
-                    this.initResults.merge(p, minAssign, (v1, v2) -> v1 - v2);
-                }
-            });
+            IntStream.range(1, closedPath.size())
+                     .forEach(index -> this.initResults.merge(closedPath.get(index),
+                                                              index % 2 == 1 ? -minAssign : minAssign,
+                                                              Double::sum));
             
             this.initResults.remove(minPosition);
             
             return true;
+            
         }
         
         return false;
