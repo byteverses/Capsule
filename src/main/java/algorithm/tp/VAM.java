@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -66,9 +65,7 @@ public class VAM {
         Integer rowIdx, colIdx;
         if(rowEntry.getValue() >= colEntry.getValue()) {
             rowIdx = rowEntry.getKey();
-            Optional<Integer> min = this.leftDemandIdxes.stream()
-                                                        .min(Comparator.comparing(idx -> this.cost[rowIdx][idx]));
-            colIdx = min.isPresent() ? 0 : min.get();
+            colIdx = this.leftDemandIdxes.stream().min(Comparator.comparing(idx -> this.cost[rowIdx][idx])).get();
         }
         else {
             colIdx = colEntry.getKey();
