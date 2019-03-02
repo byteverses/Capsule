@@ -20,14 +20,14 @@ public class MODI {
     private double[]   supply;
     private double[]   demand;
     private double[][] cost;
+
+    private Map<KV<Integer, Integer>, Double> optimizedResults;
     
-    private Map<KV<Integer, Integer>, Double> initResults;
-    
-    public MODI(double[] supply, double[] demand, double[][] cost, Map<KV<Integer, Integer>, Double> initResults) {
+    public MODI(double[] supply, double[] demand, double[][] cost, Map<KV<Integer, Integer>, Double> initialResults) {
         this.supply = supply;
         this.demand = demand;
         this.cost = cost;
-        this.initResults = new LinkedHashMap<>(initResults);
+        this.optimizedResults = new LinkedHashMap<>(initialResults);
     }
     
     public Map<KV<Integer, Integer>, Double> optimize() {
@@ -43,7 +43,7 @@ public class MODI {
             negativePositions = findNegativePositions();
         }
         
-        return this.initResults;
+        return this.optimizedResults;
     }
     
     private List<KV<Integer, Integer>> findNegativePositions() {
@@ -62,7 +62,7 @@ public class MODI {
         
         // 2. solve this equation.
         while (!leftSupplyIdxes.isEmpty() || !leftDemandIdxes.isEmpty()) {
-            this.initResults.forEach((key, value) -> {
+            this.optimizedResults.forEach((key, value) -> {
                 Integer supply = key.getKey();
                 Integer demand = key.getValue();
                 if(leftSupplyIdxes.contains(supply) && !leftDemandIdxes.contains(demand)) {
@@ -98,7 +98,7 @@ public class MODI {
     
     private boolean optimizeNegativePosition(KV<Integer, Integer> negativePosition) {
         
-        Set<KV<Integer, Integer>> assignPositions = this.initResults.entrySet()
+        Set<KV<Integer, Integer>> assignPositions = this.optimizedResults.entrySet()
                                                                     .stream()
                                                                     .map(Map.Entry::getKey)
                                                                     .collect(Collectors.toSet());
@@ -119,16 +119,16 @@ public class MODI {
             KV<Integer, Integer> minPosition = IntStream.range(1, closedPath.size())
                                                         .filter(i -> i % 2 == 1)
                                                         .mapToObj(closedPath::get)
-                                                        .min(Comparator.comparing(this.initResults::get))
+                                                        .min(Comparator.comparing(this.optimizedResults::get))
                                                         .get();
-            double minAssign = this.initResults.get(minPosition);
-            this.initResults.put(negativePosition, minAssign);
+            double minAssign = this.optimizedResults.get(minPosition);
+            this.optimizedResults.put(negativePosition, minAssign);
             IntStream.range(1, closedPath.size())
-                     .forEach(index -> this.initResults.merge(closedPath.get(index),
+                     .forEach(index -> this.optimizedResults.merge(closedPath.get(index),
                                                               index % 2 == 1 ? -minAssign : minAssign,
                                                               Double::sum));
             
-            this.initResults.remove(minPosition);
+            this.optimizedResults.remove(minPosition);
             
             return true;
             
