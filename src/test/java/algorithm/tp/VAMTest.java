@@ -19,15 +19,17 @@ public class VAMTest {
     private double[]   demand;
     private double[][] cost;
     
-    @Before public void setUp() throws Exception {
-        supply = new double[] { 10, 20, 30};
-        demand = new double[] { 20, 20, 20 };
-        cost = new double[][] { new double[] { 2, 4, 8 },
-                                new double[] { 4, 5, 1 },
-                                new double[] { 3, 7, 8 } };
+    @Before
+    public void setUp() throws Exception {
+        supply = new double[]{10, 20, 30};
+        demand = new double[]{20, 20, 20};
+        cost = new double[][]{new double[]{2, 4, 8},
+                              new double[]{4, 5, 1},
+                              new double[]{3, 7, 8}};
     }
     
-    @Test public void execute() {
+    @Test
+    public void execute() {
         VAM vam = new VAM(supply, demand, cost);
         vam.execute();
         Map<KV<Integer, Integer>, Double> results = vam.getResults();
@@ -37,7 +39,8 @@ public class VAMTest {
         System.out.println("minIdx = " + minIdx);
     }
     
-    @Test public void rowMinDiff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    @Test
+    public void rowMinDiff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method rowMinDiff = VAM.class.getDeclaredMethod("rowMinDiff", double[][].class, Set.class, Set.class);
         System.out.println("rowMinDiff = " + rowMinDiff);
         
@@ -51,7 +54,8 @@ public class VAMTest {
         System.out.println("invoke = " + invoke);
     }
     
-    @Test public void colMinDiff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    @Test
+    public void colMinDiff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method colMinDiff = VAM.class.getDeclaredMethod("colMinDiff", double[][].class, Set.class, Set.class);
         System.out.println("colMinDiff = " + colMinDiff);
         

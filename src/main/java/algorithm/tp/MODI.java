@@ -2,7 +2,14 @@ package algorithm.tp;
 
 import data.KV;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -29,8 +36,8 @@ public class MODI {
         List<KV<Integer, Integer>> negativePositions = findNegativePositions();
         
         while (!negativePositions.isEmpty()) {
-            for(KV<Integer, Integer> negativePosition : negativePositions) {
-                if(this.optimizeNegativePosition(negativePosition)) {
+            for (KV<Integer, Integer> negativePosition : negativePositions) {
+                if (this.optimizeNegativePosition(negativePosition)) {
                     break;
                 }
             }
@@ -59,11 +66,11 @@ public class MODI {
             this.optimizedResults.forEach((key, value) -> {
                 Integer supply = key.getKey();
                 Integer demand = key.getValue();
-                if(!leftSupplyIdxes.contains(supply) && leftDemandIdxes.contains(demand)) {
+                if (!leftSupplyIdxes.contains(supply) && leftDemandIdxes.contains(demand)) {
                     row[supply] = this.cost[supply][demand] - col[demand];
                     leftSupplyIdxes.add(supply);
                 }
-                if(leftSupplyIdxes.contains(supply) && !leftDemandIdxes.contains(demand)) {
+                if (leftSupplyIdxes.contains(supply) && !leftDemandIdxes.contains(demand)) {
                     col[demand] = this.cost[supply][demand] - row[supply];
                     leftDemandIdxes.add(demand);
                 }
@@ -72,10 +79,10 @@ public class MODI {
         
         // 3. calculate negative costs position.
         Map<KV<Integer, Integer>, Double> negativePositions = new HashMap<>();
-        for(int i = 0; i < row.length; i++) {
-            for(int j = 0; j < col.length; j++) {
+        for (int i = 0; i < row.length; i++) {
+            for (int j = 0; j < col.length; j++) {
                 double improveCosts = this.cost[i][j] - row[i] - col[j];
-                if(improveCosts < 0) {
+                if (improveCosts < 0) {
                     // negative position
                     negativePositions.put(new KV<>(i, j), improveCosts);
                 }
@@ -106,7 +113,7 @@ public class MODI {
         
         Stack<KV<Integer, Integer>> closedPath = this.findClosedLoopPath(negativePosition, rowPositions, colPositions);
         
-        if(!closedPath.isEmpty()) {
+        if (!closedPath.isEmpty()) {
             
             KV<Integer, Integer> minPosition = IntStream.range(1, closedPath.size())
                                                         .filter(i -> i % 2 == 1)
@@ -142,8 +149,12 @@ public class MODI {
                                                                             true,
                                                                             rowPositions,
                                                                             colPositions);
-        if(pathPositions.isEmpty()) {
-            pathPositions = this.searchNextPosition(startEndPosition, closedPath, false, rowPositions, colPositions);
+        if (pathPositions.isEmpty()) {
+            pathPositions = this.searchNextPosition(startEndPosition,
+                                                    closedPath,
+                                                    false,
+                                                    rowPositions,
+                                                    colPositions);
         }
         
         return pathPositions;
@@ -157,24 +168,22 @@ public class MODI {
         
         KV<Integer, Integer> currPosition = closedPath.peek();
         Set<KV<Integer, Integer>> nextPositions = isHorizontallySearch
-                ? rowPositions.get(currPosition.getKey())
-                : colPositions.get(currPosition.getValue());
+                                                  ? rowPositions.get(currPosition.getKey())
+                                                  : colPositions.get(currPosition.getValue());
         
-        for(KV<Integer, Integer> nextPosition : nextPositions) {
-            if(nextPosition.equals(startEndPosition) && !nextPosition.equals(currPosition)) {
+        for (KV<Integer, Integer> nextPosition : nextPositions) {
+            if (nextPosition.equals(startEndPosition) && !nextPosition.equals(currPosition)) {
                 return closedPath;
-            }
-            else if(!closedPath.contains(nextPosition)) {
+            } else if (!closedPath.contains(nextPosition)) {
                 closedPath.push(nextPosition);
                 Stack<KV<Integer, Integer>> searchPosition = this.searchNextPosition(startEndPosition,
                                                                                      closedPath,
                                                                                      !isHorizontallySearch,
                                                                                      rowPositions,
                                                                                      colPositions);
-                if(searchPosition.isEmpty()) {
+                if (searchPosition.isEmpty()) {
                     closedPath.pop();
-                }
-                else {
+                } else {
                     return closedPath;
                 }
             }

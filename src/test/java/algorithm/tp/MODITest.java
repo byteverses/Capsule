@@ -12,31 +12,33 @@ public class MODITest {
     private double[]   demand;
     private double[][] cost;
     
-    @Before public void setUp() {
+    @Before
+    public void setUp() {
         
-        supply = new double[] { 1, 1, 1, 1, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1 };
-        demand = new double[] { 1, 1, 1, 1, 1, 1, 1, 17 };
-        cost = new double[][] { new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 2, 3, 2, 3, 2, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 1, 1, 3, 2, 3, 3, 3, 0 },
-                                new double[] { 1, 1, 3, 2, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 1, 3, 3, 2, 3, 0 },
-                                new double[] { 2, 2, 3, 1, 3, 3, 3, 0 },
-                                new double[] { 2, 2, 3, 1, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 1, 2, 1, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 3, 3, 3, 0 },
-                                new double[] { 3, 3, 3, 3, 2, 3, 2, 0 },
-                                new double[] { 3, 3, 3, 3, 2, 3, 2, 0 } };
+        supply = new double[]{1, 1, 1, 1, 1, 1, 1, 3, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1};
+        demand = new double[]{1, 1, 1, 1, 1, 1, 1, 17};
+        cost = new double[][]{new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 2, 3, 2, 3, 2, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{1, 1, 3, 2, 3, 3, 3, 0},
+                              new double[]{1, 1, 3, 2, 3, 3, 3, 0},
+                              new double[]{3, 3, 1, 3, 3, 2, 3, 0},
+                              new double[]{2, 2, 3, 1, 3, 3, 3, 0},
+                              new double[]{2, 2, 3, 1, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 1, 2, 1, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 3, 3, 3, 0},
+                              new double[]{3, 3, 3, 3, 2, 3, 2, 0},
+                              new double[]{3, 3, 3, 3, 2, 3, 2, 0}};
     }
     
-    @Test public void optimize() {
+    @Test
+    public void optimize() {
         VAM vam = new VAM(supply, demand, cost);
         vam.execute();
         Map<KV<Integer, Integer>, Double> results = vam.getResults();
@@ -52,7 +54,7 @@ public class MODITest {
             KV<Integer, Integer> key = entry.getKey();
             return entry.getValue() * cost[key.getKey()][key.getValue()];
         }).sum();
-    
+        
         double optimizedCost = optimize.entrySet().stream().mapToDouble(entry -> {
             KV<Integer, Integer> key = entry.getKey();
             return entry.getValue() * cost[key.getKey()][key.getValue()];

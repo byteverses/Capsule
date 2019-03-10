@@ -38,8 +38,8 @@ public class VAM {
             this.iterativeStepAssign();
         }
         
-        for(Integer leftSupplyIdx : this.leftSupplyIdxes) {
-            for(Integer leftDemandIdx : this.leftDemandIdxes) {
+        for (Integer leftSupplyIdx : this.leftSupplyIdxes) {
+            for (Integer leftDemandIdx : this.leftDemandIdxes) {
                 double assignQty = Math.min(this.supplies[leftSupplyIdx], this.demands[leftDemandIdx]);
                 this.results.put(new KV<>(leftSupplyIdx, leftDemandIdx), assignQty);
             }
@@ -63,23 +63,21 @@ public class VAM {
         
         // 3. find max row or col and assign qty for the lowest cost.
         Integer rowIdx, colIdx;
-        if(rowEntry.getValue() >= colEntry.getValue()) {
+        if (rowEntry.getValue() >= colEntry.getValue()) {
             rowIdx = rowEntry.getKey();
             colIdx = this.leftDemandIdxes.stream().min(Comparator.comparing(idx -> this.cost[rowIdx][idx])).get();
-        }
-        else {
+        } else {
             colIdx = colEntry.getKey();
             rowIdx = this.leftSupplyIdxes.stream().min(Comparator.comparing(idx -> this.cost[idx][colIdx])).get();
         }
         
         double supply = this.supplies[rowIdx];
         double demand = this.demands[colIdx];
-        if(supply > demand) {
+        if (supply > demand) {
             this.supplies[rowIdx] -= demand;
             this.results.put(new KV<>(rowIdx, colIdx), demand);
             this.leftDemandIdxes.remove(colIdx);
-        }
-        else {
+        } else {
             this.demands[colIdx] -= supply;
             this.results.put(new KV<>(rowIdx, colIdx), supply);
             this.leftSupplyIdxes.remove(rowIdx);
@@ -88,17 +86,16 @@ public class VAM {
     
     private Map<Integer, Double> rowMinDiff(double[][] cost, Set<Integer> rowIdxes, Set<Integer> colIdxes) {
         LinkedHashMap<Integer, Double> rowMinDiff = new LinkedHashMap<>();
-        for(Integer rowIdx : rowIdxes) {
+        for (Integer rowIdx : rowIdxes) {
             double[] rowData = cost[rowIdx];
             double min1st = Double.MAX_VALUE;
             double min2nd = Double.MAX_VALUE;
-            for(Integer colIdx : colIdxes) {
+            for (Integer colIdx : colIdxes) {
                 double value = rowData[colIdx];
-                if(value < min1st) {
+                if (value < min1st) {
                     min2nd = min1st;
                     min1st = value;
-                }
-                else if(value < min2nd) {
+                } else if (value < min2nd) {
                     min2nd = value;
                 }
             }
@@ -110,16 +107,15 @@ public class VAM {
     
     private Map<Integer, Double> colMinDiff(double[][] cost, Set<Integer> rowIdxes, Set<Integer> colIdxes) {
         LinkedHashMap<Integer, Double> colMinDiff = new LinkedHashMap<>();
-        for(Integer colIdx : colIdxes) {
+        for (Integer colIdx : colIdxes) {
             double min1st = Double.MAX_VALUE;
             double min2nd = Double.MAX_VALUE;
-            for(Integer rowIdx : rowIdxes) {
+            for (Integer rowIdx : rowIdxes) {
                 double value = cost[rowIdx][colIdx];
-                if(value < min1st) {
+                if (value < min1st) {
                     min2nd = min1st;
                     min1st = value;
-                }
-                else if(value < min2nd) {
+                } else if (value < min2nd) {
                     min2nd = value;
                 }
             }
