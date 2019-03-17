@@ -1,6 +1,6 @@
 package algorithm.tp;
 
-import data.KV;
+import data.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class VAMTest {
     public void execute() {
         VAM vam = new VAM(supply, demand, cost);
         vam.execute();
-        Map<KV<Integer, Integer>, Double> results = vam.getResults();
+        Map<Tuple<Integer, Integer>, Double> results = vam.getResults();
         System.out.println("results = " + results);
         
         Integer minIdx = Stream.of(0, 1, 2).min(Comparator.comparing(idx -> this.cost[0][idx])).get();

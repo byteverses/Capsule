@@ -1,6 +1,6 @@
 package algorithm.tp;
 
-import data.KV;
+import data.Tuple;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -22,7 +22,7 @@ public class VAM {
     private Set<Integer> leftSupplyIdxes = new LinkedHashSet<>();
     private Set<Integer> leftDemandIdxes = new LinkedHashSet<>();
     
-    private Map<KV<Integer, Integer>, Double> results = new LinkedHashMap<>();
+    private Map<Tuple<Integer, Integer>, Double> results = new LinkedHashMap<>();
     
     public VAM(double[] supply, double[] demand, double[][] cost) {
         this.supplies = supply;
@@ -41,7 +41,7 @@ public class VAM {
         for (Integer leftSupplyIdx : this.leftSupplyIdxes) {
             for (Integer leftDemandIdx : this.leftDemandIdxes) {
                 double assignQty = Math.min(this.supplies[leftSupplyIdx], this.demands[leftDemandIdx]);
-                this.results.put(new KV<>(leftSupplyIdx, leftDemandIdx), assignQty);
+                this.results.put(new Tuple<>(leftSupplyIdx, leftDemandIdx), assignQty);
             }
         }
     }
@@ -75,11 +75,11 @@ public class VAM {
         double demand = this.demands[colIdx];
         if (supply > demand) {
             this.supplies[rowIdx] -= demand;
-            this.results.put(new KV<>(rowIdx, colIdx), demand);
+            this.results.put(new Tuple<>(rowIdx, colIdx), demand);
             this.leftDemandIdxes.remove(colIdx);
         } else {
             this.demands[colIdx] -= supply;
-            this.results.put(new KV<>(rowIdx, colIdx), supply);
+            this.results.put(new Tuple<>(rowIdx, colIdx), supply);
             this.leftSupplyIdxes.remove(rowIdx);
         }
     }
@@ -124,7 +124,7 @@ public class VAM {
         return colMinDiff;
     }
     
-    public Map<KV<Integer, Integer>, Double> getResults() {
+    public Map<Tuple<Integer, Integer>, Double> getResults() {
         return this.results;
     }
 }

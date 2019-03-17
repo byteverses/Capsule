@@ -2,11 +2,11 @@ package data;
 
 import java.util.Objects;
 
-public final class KV<K, V> {
+public final class Tuple<K, V> {
     private final K key;
     private final V value;
     
-    public KV(K key, V value) {
+    public Tuple(K key, V value) {
         this.key = key;
         this.value = value;
     }
@@ -25,7 +25,7 @@ public final class KV<K, V> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        KV<?, ?> keyValue = (KV<?, ?>) o;
+        Tuple<?, ?> keyValue = (Tuple<?, ?>) o;
         return Objects.equals(key, keyValue.key) && Objects.equals(value, keyValue.value);
     }
     

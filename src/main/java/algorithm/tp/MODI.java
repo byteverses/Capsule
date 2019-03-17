@@ -1,6 +1,6 @@
 package algorithm.tp;
 
-import data.KV;
+import data.Tuple;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,21 +22,21 @@ public class MODI {
     private double[]   demand;
     private double[][] cost;
     
-    private Map<KV<Integer, Integer>, Double> optimizedResults;
+    private Map<Tuple<Integer, Integer>, Double> optimizedResults;
     
-    public MODI(double[] supply, double[] demand, double[][] cost, Map<KV<Integer, Integer>, Double> initialResults) {
+    public MODI(double[] supply, double[] demand, double[][] cost, Map<Tuple<Integer, Integer>, Double> initialResults) {
         this.supply = supply;
         this.demand = demand;
         this.cost = cost;
         this.optimizedResults = new LinkedHashMap<>(initialResults);
     }
     
-    public Map<KV<Integer, Integer>, Double> optimize() {
+    public Map<Tuple<Integer, Integer>, Double> optimize() {
         
-        List<KV<Integer, Integer>> negativePositions = findNegativePositions();
+        List<Tuple<Integer, Integer>> negativePositions = findNegativePositions();
         
         while (!negativePositions.isEmpty()) {
-            for (KV<Integer, Integer> negativePosition : negativePositions) {
+            for (Tuple<Integer, Integer> negativePosition : negativePositions) {
                 if (this.optimizeNegativePosition(negativePosition)) {
                     break;
                 }
@@ -47,7 +47,7 @@ public class MODI {
         return this.optimizedResults;
     }
     
-    private List<KV<Integer, Integer>> findNegativePositions() {
+    private List<Tuple<Integer, Integer>> findNegativePositions() {
         Set<Integer> leftSupplyIdxes = new HashSet<>();
         Set<Integer> leftDemandIdxes = new HashSet<>();
         
@@ -78,13 +78,13 @@ public class MODI {
         }
         
         // 3. calculate negative costs position.
-        Map<KV<Integer, Integer>, Double> negativePositions = new HashMap<>();
+        Map<Tuple<Integer, Integer>, Double> negativePositions = new HashMap<>();
         for (int i = 0; i < row.length; i++) {
             for (int j = 0; j < col.length; j++) {
                 double improveCosts = this.cost[i][j] - row[i] - col[j];
                 if (improveCosts < 0) {
                     // negative position
-                    negativePositions.put(new KV<>(i, j), improveCosts);
+                    negativePositions.put(new Tuple<>(i, j), improveCosts);
                 }
             }
         }
@@ -96,30 +96,30 @@ public class MODI {
                                 .collect(Collectors.toList());
     }
     
-    private boolean optimizeNegativePosition(KV<Integer, Integer> negativePosition) {
+    private boolean optimizeNegativePosition(Tuple<Integer, Integer> negativePosition) {
         
-        Set<KV<Integer, Integer>> assignPositions = this.optimizedResults.keySet()
-                                                                         .stream()
-                                                                         .collect(Collectors.toSet());
+        Set<Tuple<Integer, Integer>> assignPositions = this.optimizedResults.keySet()
+                                                                            .stream()
+                                                                            .collect(Collectors.toSet());
         // add current negative position
         assignPositions.add(negativePosition);
         
-        Map<Integer, Set<KV<Integer, Integer>>> rowPositions = assignPositions.stream()
-                                                                              .collect(Collectors.groupingBy(KV::getKey,
-                                                                                                             Collectors.toSet()));
-        Map<Integer, Set<KV<Integer, Integer>>> colPositions = assignPositions.stream()
-                                                                              .collect(Collectors.groupingBy(KV::getValue,
-                                                                                                             Collectors.toSet()));
+        Map<Integer, Set<Tuple<Integer, Integer>>> rowPositions = assignPositions.stream()
+                                                                                 .collect(Collectors.groupingBy(Tuple::getKey,
+                                                                                                                Collectors.toSet()));
+        Map<Integer, Set<Tuple<Integer, Integer>>> colPositions = assignPositions.stream()
+                                                                                 .collect(Collectors.groupingBy(Tuple::getValue,
+                                                                                                                Collectors.toSet()));
         
-        Stack<KV<Integer, Integer>> closedPath = this.findClosedLoopPath(negativePosition, rowPositions, colPositions);
+        Stack<Tuple<Integer, Integer>> closedPath = this.findClosedLoopPath(negativePosition, rowPositions, colPositions);
         
         if (!closedPath.isEmpty()) {
             
-            KV<Integer, Integer> minPosition = IntStream.range(1, closedPath.size())
-                                                        .filter(i -> i % 2 == 1)
-                                                        .mapToObj(closedPath::get)
-                                                        .min(Comparator.comparing(this.optimizedResults::get))
-                                                        .get();
+            Tuple<Integer, Integer> minPosition = IntStream.range(1, closedPath.size())
+                                                           .filter(i -> i % 2 == 1)
+                                                           .mapToObj(closedPath::get)
+                                                           .min(Comparator.comparing(this.optimizedResults::get))
+                                                           .get();
             double minAssign = this.optimizedResults.get(minPosition);
             this.optimizedResults.put(negativePosition, minAssign);
             IntStream.range(1, closedPath.size())
@@ -136,19 +136,19 @@ public class MODI {
         return false;
     }
     
-    private Stack<KV<Integer, Integer>> findClosedLoopPath(KV<Integer, Integer> startEndPosition,
-                                                           Map<Integer, Set<KV<Integer, Integer>>> rowPositions,
-                                                           Map<Integer, Set<KV<Integer, Integer>>> colPositions) {
+    private Stack<Tuple<Integer, Integer>> findClosedLoopPath(Tuple<Integer, Integer> startEndPosition,
+                                                              Map<Integer, Set<Tuple<Integer, Integer>>> rowPositions,
+                                                              Map<Integer, Set<Tuple<Integer, Integer>>> colPositions) {
         
-        Stack<KV<Integer, Integer>> closedPath = new Stack<>();
+        Stack<Tuple<Integer, Integer>> closedPath = new Stack<>();
         
         closedPath.push(startEndPosition);
         
-        Stack<KV<Integer, Integer>> pathPositions = this.searchNextPosition(startEndPosition,
-                                                                            closedPath,
-                                                                            true,
-                                                                            rowPositions,
-                                                                            colPositions);
+        Stack<Tuple<Integer, Integer>> pathPositions = this.searchNextPosition(startEndPosition,
+                                                                               closedPath,
+                                                                               true,
+                                                                               rowPositions,
+                                                                               colPositions);
         if (pathPositions.isEmpty()) {
             pathPositions = this.searchNextPosition(startEndPosition,
                                                     closedPath,
@@ -160,27 +160,27 @@ public class MODI {
         return pathPositions;
     }
     
-    private Stack<KV<Integer, Integer>> searchNextPosition(KV<Integer, Integer> startEndPosition,
-                                                           Stack<KV<Integer, Integer>> closedPath,
-                                                           boolean isHorizontallySearch,
-                                                           Map<Integer, Set<KV<Integer, Integer>>> rowPositions,
-                                                           Map<Integer, Set<KV<Integer, Integer>>> colPositions) {
+    private Stack<Tuple<Integer, Integer>> searchNextPosition(Tuple<Integer, Integer> startEndPosition,
+                                                              Stack<Tuple<Integer, Integer>> closedPath,
+                                                              boolean isHorizontallySearch,
+                                                              Map<Integer, Set<Tuple<Integer, Integer>>> rowPositions,
+                                                              Map<Integer, Set<Tuple<Integer, Integer>>> colPositions) {
         
-        KV<Integer, Integer> currPosition = closedPath.peek();
-        Set<KV<Integer, Integer>> nextPositions = isHorizontallySearch
+        Tuple<Integer, Integer> currPosition = closedPath.peek();
+        Set<Tuple<Integer, Integer>> nextPositions = isHorizontallySearch
                                                   ? rowPositions.get(currPosition.getKey())
                                                   : colPositions.get(currPosition.getValue());
         
-        for (KV<Integer, Integer> nextPosition : nextPositions) {
+        for (Tuple<Integer, Integer> nextPosition : nextPositions) {
             if (nextPosition.equals(startEndPosition) && !nextPosition.equals(currPosition)) {
                 return closedPath;
             } else if (!closedPath.contains(nextPosition)) {
                 closedPath.push(nextPosition);
-                Stack<KV<Integer, Integer>> searchPosition = this.searchNextPosition(startEndPosition,
-                                                                                     closedPath,
-                                                                                     !isHorizontallySearch,
-                                                                                     rowPositions,
-                                                                                     colPositions);
+                Stack<Tuple<Integer, Integer>> searchPosition = this.searchNextPosition(startEndPosition,
+                                                                                        closedPath,
+                                                                                        !isHorizontallySearch,
+                                                                                        rowPositions,
+                                                                                        colPositions);
                 if (searchPosition.isEmpty()) {
                     closedPath.pop();
                 } else {

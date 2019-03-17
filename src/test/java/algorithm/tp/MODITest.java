@@ -1,6 +1,6 @@
 package algorithm.tp;
 
-import data.KV;
+import data.Tuple;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,25 +41,27 @@ public class MODITest {
     public void optimize() {
         VAM vam = new VAM(supply, demand, cost);
         vam.execute();
-        Map<KV<Integer, Integer>, Double> results = vam.getResults();
+        Map<Tuple<Integer, Integer>, Double> results = vam.getResults();
         System.out.println("results = " + results);
         
         MODI modi = new MODI(supply, demand, cost, results);
-        Map<KV<Integer, Integer>, Double> optimize = modi.optimize();
+        Map<Tuple<Integer, Integer>, Double> optimize = modi.optimize();
         System.out.println("optimize = " + optimize);
         
         optimize.forEach((key, value) -> Assert.assertTrue(value >= 0));
         
         double vamCost = results.entrySet().stream().mapToDouble(entry -> {
-            KV<Integer, Integer> key = entry.getKey();
+            Tuple<Integer, Integer> key = entry.getKey();
             return entry.getValue() * cost[key.getKey()][key.getValue()];
         }).sum();
         
         double optimizedCost = optimize.entrySet().stream().mapToDouble(entry -> {
-            KV<Integer, Integer> key = entry.getKey();
+            Tuple<Integer, Integer> key = entry.getKey();
             return entry.getValue() * cost[key.getKey()][key.getValue()];
         }).sum();
         
         Assert.assertTrue(optimizedCost <= vamCost);
+    
+    
     }
 }
