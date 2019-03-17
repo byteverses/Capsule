@@ -3,20 +3,20 @@ package data;
 import java.util.Objects;
 
 public final class Tuple<K, V> {
-    private final K key;
-    private final V value;
+    private final K k;
+    private final V v;
     
     public Tuple(K key, V value) {
-        this.key = key;
-        this.value = value;
+        this.k = key;
+        this.v = value;
     }
     
-    public K getKey() {
-        return key;
+    public K getK() {
+        return k;
     }
     
-    public V getValue() {
-        return value;
+    public V getV() {
+        return v;
     }
     
     @Override
@@ -25,17 +25,17 @@ public final class Tuple<K, V> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Tuple<?, ?> keyValue = (Tuple<?, ?>) o;
-        return Objects.equals(key, keyValue.key) && Objects.equals(value, keyValue.value);
+        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+        return Objects.equals(k, tuple.k) && Objects.equals(v, tuple.v);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(key, value);
+        return Objects.hash(k, v);
     }
     
     @Override
     public String toString() {
-        return "[" + key + ":" + value + ']';
+        return "[" + k + ":" + v + ']';
     }
 }

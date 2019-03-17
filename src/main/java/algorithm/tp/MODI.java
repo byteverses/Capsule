@@ -64,8 +64,8 @@ public class MODI {
         // 2. solve this equation.
         while (leftSupplyIdxes.size() < supply.length || leftDemandIdxes.size() < demand.length) {
             this.optimizedResults.forEach((key, value) -> {
-                Integer supply = key.getKey();
-                Integer demand = key.getValue();
+                Integer supply = key.getK();
+                Integer demand = key.getV();
                 if (!leftSupplyIdxes.contains(supply) && leftDemandIdxes.contains(demand)) {
                     row[supply] = this.cost[supply][demand] - col[demand];
                     leftSupplyIdxes.add(supply);
@@ -105,10 +105,10 @@ public class MODI {
         assignPositions.add(negativePosition);
         
         Map<Integer, Set<Tuple<Integer, Integer>>> rowPositions = assignPositions.stream()
-                                                                                 .collect(Collectors.groupingBy(Tuple::getKey,
+                                                                                 .collect(Collectors.groupingBy(Tuple::getK,
                                                                                                                 Collectors.toSet()));
         Map<Integer, Set<Tuple<Integer, Integer>>> colPositions = assignPositions.stream()
-                                                                                 .collect(Collectors.groupingBy(Tuple::getValue,
+                                                                                 .collect(Collectors.groupingBy(Tuple::getV,
                                                                                                                 Collectors.toSet()));
         
         Stack<Tuple<Integer, Integer>> closedPath = this.findClosedLoopPath(negativePosition, rowPositions, colPositions);
@@ -168,8 +168,8 @@ public class MODI {
         
         Tuple<Integer, Integer> currPosition = closedPath.peek();
         Set<Tuple<Integer, Integer>> nextPositions = isHorizontallySearch
-                                                  ? rowPositions.get(currPosition.getKey())
-                                                  : colPositions.get(currPosition.getValue());
+                                                  ? rowPositions.get(currPosition.getK())
+                                                  : colPositions.get(currPosition.getV());
         
         for (Tuple<Integer, Integer> nextPosition : nextPositions) {
             if (nextPosition.equals(startEndPosition) && !nextPosition.equals(currPosition)) {
