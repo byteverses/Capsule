@@ -2,21 +2,21 @@ package data;
 
 import java.util.Objects;
 
-public final class Tuple<K, V> {
-    private final K k;
-    private final V v;
+public final class Tuple<X, Y> {
+    private final X x;
+    private final Y y;
     
-    public Tuple(K key, V value) {
-        this.k = key;
-        this.v = value;
+    public Tuple(X key, Y value) {
+        this.x = key;
+        this.y = value;
     }
     
-    public K getK() {
-        return k;
+    public X getX() {
+        return x;
     }
     
-    public V getV() {
-        return v;
+    public Y getY() {
+        return y;
     }
     
     @Override
@@ -26,16 +26,16 @@ public final class Tuple<K, V> {
         if (o == null || getClass() != o.getClass())
             return false;
         Tuple<?, ?> tuple = (Tuple<?, ?>) o;
-        return Objects.equals(k, tuple.k) && Objects.equals(v, tuple.v);
+        return Objects.equals(x, tuple.x) && Objects.equals(y, tuple.y);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(k, v);
+        return Objects.hash(x, y);
     }
     
     @Override
     public String toString() {
-        return "[" + k + ":" + v + ']';
+        return "[" + x + ", " + y + ']';
     }
 }

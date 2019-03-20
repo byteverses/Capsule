@@ -52,12 +52,12 @@ public class MODITest {
         
         double vamCost = results.entrySet().stream().mapToDouble(entry -> {
             Tuple<Integer, Integer> key = entry.getKey();
-            return entry.getValue() * cost[key.getK()][key.getV()];
+            return entry.getValue() * cost[key.getX()][key.getY()];
         }).sum();
         
         double optimizedCost = optimize.entrySet().stream().mapToDouble(entry -> {
             Tuple<Integer, Integer> key = entry.getKey();
-            return entry.getValue() * cost[key.getK()][key.getV()];
+            return entry.getValue() * cost[key.getX()][key.getY()];
         }).sum();
         
         Assert.assertTrue(optimizedCost <= vamCost);
