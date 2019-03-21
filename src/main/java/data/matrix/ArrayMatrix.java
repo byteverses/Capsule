@@ -79,6 +79,16 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         return transposeMatrix;
     }
     
+    @Override public V putValue(R row, C col, V value) {
+        //TODO: add index range check.
+        Integer rowIdx = this.rowIdxes.get(row);
+        Integer colIdx = this.colIdxes.get(col);
+        V oldValue = this.data[rowIdx][colIdx];
+        this.data[rowIdx][colIdx] = value;
+        
+        return oldValue;
+    }
+    
     @Override public V getValue(R r, C c) {
         Integer rowIdx;
         Integer colIdx;
@@ -95,4 +105,7 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         return this.rows.size() * this.cols.size();
     }
     
+    @Override public void clear() {
+        throw new UnsupportedOperationException("ArrayMatrix can't be clear! New an ArrayMatrix instead");
+    }
 }
