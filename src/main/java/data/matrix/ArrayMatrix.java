@@ -23,11 +23,13 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
                                  .collect(Collectors.toCollection(LinkedList::new));
         this.cols = StreamSupport.stream(iterableCols.spliterator(), false)
                                  .collect(Collectors.toCollection(LinkedList::new));
-        
-        this.data = (V[][]) new Object[this.rows.size()][this.cols.size()];
-        
-        this.rowIdxes = MapUtil.IndexMap(iterableRows, LinkedHashMap::new);
-        this.colIdxes = MapUtil.IndexMap(iterableCols, LinkedHashMap::new);
+    
+        this.rowIdxes = MapUtil.mapIndex(iterableRows, LinkedHashMap::new);
+        this.colIdxes = MapUtil.mapIndex(iterableCols, LinkedHashMap::new);
+    
+        @SuppressWarnings("unchecked")
+        V[][] tmp = (V[][]) new Object[this.rows.size()][this.cols.size()];
+        this.data = tmp;
     }
     
     public ArrayMatrix<R, C, V> slice(Tuple<Integer, Integer> rowIdxRange, Tuple<Integer, Integer> colIdxRange) {
@@ -43,12 +45,13 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         ArrayMatrix<R, C, V> sliceMatrix = new ArrayMatrix<>(newRowList, newColList);
         
         for(int idx = rowStartIdx; idx < rowEndIdx; idx++) {
-            sliceMatrix.data[idx] = (V[]) Arrays.copyOfRange(this.data, colStartIdx, colEndIdx);
+            sliceMatrix.data[idx] = Arrays.copyOfRange(this.data[idx], colStartIdx, colEndIdx);
         }
         
         return sliceMatrix;
     }
     
+    @Override
     public ArrayMatrix<R, C, V> slice(Collection<R> rows, Collection<C> cols) {
         
         LinkedList<R> newRowList = new LinkedList<>(rows);
@@ -56,6 +59,7 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         
         ArrayMatrix<R, C, V> sliceMatrix = new ArrayMatrix<>(newRowList, newColList);
         
+        //TODO: add index range check.
         for(R row : newRowList) {
             Integer rowIdx = this.rowIdxes.get(row);
             for(C col : newColList) {
@@ -67,6 +71,7 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         return sliceMatrix;
     }
     
+    @Override
     public ArrayMatrix<C, R, V> transpose() {
         ArrayMatrix<C, R, V> transposeMatrix = new ArrayMatrix<>(new LinkedList<>(this.cols),
                                                                  new LinkedList<>(this.rows));

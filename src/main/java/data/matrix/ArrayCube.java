@@ -26,27 +26,45 @@ public class ArrayCube<X, Y, Z, V> implements Cube<X, Y, Z, V> {
                                .collect(Collectors.toCollection(LinkedList::new));
         this.zs = StreamSupport.stream(zIterable.spliterator(), false)
                                .collect(Collectors.toCollection(LinkedList::new));
-        this.xIdxes = MapUtil.IndexMap(xIterable, LinkedHashMap::new);
-        this.yIdxes = MapUtil.IndexMap(yIterable, LinkedHashMap::new);
-        this.zIdxes = MapUtil.IndexMap(zIterable, LinkedHashMap::new);
+        this.xIdxes = MapUtil.mapIndex(xIterable, LinkedHashMap::new);
+        this.yIdxes = MapUtil.mapIndex(yIterable, LinkedHashMap::new);
+        this.zIdxes = MapUtil.mapIndex(zIterable, LinkedHashMap::new);
         
-        this.data = (V[][][]) new Object[this.xs.size()][this.ys.size()][this.zs.size()];
+        @SuppressWarnings("unchecked")
+        V[][][] tmp = (V[][][]) new Object[this.xs.size()][this.ys.size()][this.zs.size()];
+        this.data = tmp;
     }
     
-    @Override public V getValue(X x, Y y, Z z) {
+    @Override
+    public V putValue(X x, Y y, Z z, V value) {
+        
+        //TODO: add index range check.
+        Integer xIdx = this.xIdxes.get(x);
+        Integer yIdx = this.yIdxes.get(y);
+        Integer zIdx = this.zIdxes.get(z);
+        V oldValue = this.data[xIdx][yIdx][zIdx];
+        this.data[xIdx][yIdx][zIdx] = value;
+        
+        return oldValue;
+    }
+    
+    @Override
+    public V getValue(X x, Y y, Z z) {
         Integer xIdx;
         Integer yIdx;
         Integer zIdx;
         return ((xIdx = xIdxes.get(x)) == null || (yIdx = yIdxes.get(y)) == null || (zIdx = zIdxes.get(z)) == null)
-                ? null
-                : this.data[xIdx][yIdx][zIdx];
+               ? null
+               : this.data[xIdx][yIdx][zIdx];
     }
     
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return this.xs.isEmpty() && this.ys.isEmpty() && this.zs.isEmpty();
     }
     
-    @Override public int size() {
+    @Override
+    public int size() {
         return xs.size() * ys.size() * zs.size();
     }
 }

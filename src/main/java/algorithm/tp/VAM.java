@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -19,8 +21,8 @@ public class VAM {
     
     private double[][] cost;
     
-    private Set<Integer> leftSupplyIdxes = new LinkedHashSet<>();
-    private Set<Integer> leftDemandIdxes = new LinkedHashSet<>();
+    private Set<Integer> leftSupplyIdxes;
+    private Set<Integer> leftDemandIdxes;
     
     private Map<Tuple<Integer, Integer>, Double> results = new LinkedHashMap<>();
     
@@ -29,8 +31,12 @@ public class VAM {
         this.demands = demand;
         this.cost = cost;
         
-        IntStream.range(0, supply.length).forEachOrdered(leftSupplyIdxes::add);
-        IntStream.range(0, demand.length).forEachOrdered(leftDemandIdxes::add);
+        leftSupplyIdxes = IntStream.range(0, supply.length)
+                                   .boxed()
+                                   .collect(Collectors.toCollection(LinkedHashSet::new));
+        leftDemandIdxes = IntStream.range(0, demand.length)
+                                   .boxed()
+                                   .collect(Collectors.toCollection(LinkedHashSet::new));
     }
     
     public void execute() {
@@ -47,40 +53,49 @@ public class VAM {
     }
     
     private void iterativeStepAssign() {
-        // 1. calculate (2nd min cost - 1st min cost) for each left rows and cols;
+        // 1. calculate (2nd min cost - 1st min cost) for each left rows and cols.
         Map<Integer, Double> rowMinDiff = this.rowMinDiff(this.cost, this.leftSupplyIdxes, this.leftDemandIdxes);
         Map<Integer, Double> colMinDiff = this.colMinDiff(this.cost, this.leftSupplyIdxes, this.leftDemandIdxes);
         
-        // 2. get the max diff for all rows & cols
-        Map.Entry<Integer, Double> rowEntry = rowMinDiff.entrySet()
-                                                        .stream()
-                                                        .max(Comparator.comparing(Map.Entry::getValue))
-                                                        .get();
-        Map.Entry<Integer, Double> colEntry = colMinDiff.entrySet()
-                                                        .stream()
-                                                        .max(Comparator.comparing(Map.Entry::getValue))
-                                                        .get();
+        // 2. get the max diff for all rows & cols.
+        Optional<Map.Entry<Integer, Double>> maxRow = rowMinDiff.entrySet()
+                                                                .stream()
+                                                                .max(Comparator.comparing(Map.Entry::getValue));
         
-        // 3. find max row or col and assign qty for the lowest cost.
-        Integer rowIdx, colIdx;
-        if (rowEntry.getValue() >= colEntry.getValue()) {
-            rowIdx = rowEntry.getKey();
-            colIdx = this.leftDemandIdxes.stream().min(Comparator.comparing(idx -> this.cost[rowIdx][idx])).get();
-        } else {
-            colIdx = colEntry.getKey();
-            rowIdx = this.leftSupplyIdxes.stream().min(Comparator.comparing(idx -> this.cost[idx][colIdx])).get();
-        }
+        Optional<Map.Entry<Integer, Double>> maxCol = colMinDiff.entrySet()
+                                                                .stream()
+                                                                .max(Comparator.comparing(Map.Entry::getValue));
         
-        double supply = this.supplies[rowIdx];
-        double demand = this.demands[colIdx];
-        if (supply > demand) {
-            this.supplies[rowIdx] -= demand;
-            this.results.put(new Tuple<>(rowIdx, colIdx), demand);
-            this.leftDemandIdxes.remove(colIdx);
-        } else {
-            this.demands[colIdx] -= supply;
-            this.results.put(new Tuple<>(rowIdx, colIdx), supply);
-            this.leftSupplyIdxes.remove(rowIdx);
+        if (maxRow.isPresent() && maxCol.isPresent()) {
+            Map.Entry<Integer, Double> rowEntry = maxRow.get();
+            Map.Entry<Integer, Double> colEntry = maxCol.get();
+            
+            // 3. find max row or col and assign qty for the lowest cost.
+            int rowIdx;
+            int colIdx;
+            if (rowEntry.getValue() >= colEntry.getValue()) {
+                rowIdx = rowEntry.getKey();
+                Optional<Integer> colMin = this.leftDemandIdxes.stream()
+                                                               .min(Comparator.comparing(idx -> this.cost[rowIdx][idx]));
+                colIdx = colMin.isPresent() ? colMin.get() : -1;
+            } else {
+                colIdx = colEntry.getKey();
+                Optional<Integer> rowMin = this.leftSupplyIdxes.stream()
+                                                               .min(Comparator.comparing(idx -> this.cost[idx][colIdx]));
+                rowIdx = rowMin.isPresent() ? rowMin.get() : -1;
+            }
+            
+            double supply = this.supplies[rowIdx];
+            double demand = this.demands[colIdx];
+            if (supply > demand) {
+                this.supplies[rowIdx] -= demand;
+                this.results.put(new Tuple<>(rowIdx, colIdx), demand);
+                this.leftDemandIdxes.remove(colIdx);
+            } else {
+                this.demands[colIdx] -= supply;
+                this.results.put(new Tuple<>(rowIdx, colIdx), supply);
+                this.leftSupplyIdxes.remove(rowIdx);
+            }
         }
     }
     

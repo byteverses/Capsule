@@ -1,8 +1,18 @@
 package data.matrix;
 
+import java.util.Collection;
+
 public interface Matrix<X, Y, V> {
     
-    V putValue(X row, Y col, V value);
+    Matrix<X, Y, V> slice(Collection<X> rows, Collection<Y> cols);
+    
+    Matrix<Y, X, V> transpose();
+    
+    /**
+     *
+     * @return oldValue
+     */
+    V putValue(X row, Y col, V newValue);
     
     V getValue(X x, Y y);
     
@@ -12,19 +22,23 @@ public interface Matrix<X, Y, V> {
     
     void clear();
     
-    @Override boolean equals(Object obj);
+    @Override
+    boolean equals(Object obj);
     
-    @Override int hashCode();
+    @Override
+    int hashCode();
     
     interface Element<X, Y, V> {
         X getX();
-    
+        
         Y getY();
-    
+        
         V getValue();
-    
-        @Override boolean equals(Object obj);
-    
-        @Override int hashCode();
+        
+        @Override
+        boolean equals(Object obj);
+        
+        @Override
+        int hashCode();
     }
 }
