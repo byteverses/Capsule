@@ -24,9 +24,4 @@ public class MapUtil {
         }
         return mapIndex;
     }
-    
-    public static <K, V> V getOrCreate(Map<K, V> map, K key, Supplier<V> valueSupplier) {
-        
-        return map.computeIfAbsent(key, k -> valueSupplier.get());
-    }
 }

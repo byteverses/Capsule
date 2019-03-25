@@ -17,10 +17,10 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
         HashSet<X> rowsSet = new HashSet<>(rows);
         HashSet<Y> colsSet = new HashSet<>(cols);
         
-        for (Map.Entry<X, Map<Y, V>> entry : this.data.entrySet()) {
-            if (rowsSet.contains(entry.getKey())) {
-                for (Map.Entry<Y, V> colEntry : entry.getValue().entrySet()) {
-                    if (colsSet.contains(colEntry.getKey())) {
+        for(Map.Entry<X, Map<Y, V>> entry : data.entrySet()) {
+            if(rowsSet.contains(entry.getKey())) {
+                for(Map.Entry<Y, V> colEntry : entry.getValue().entrySet()) {
+                    if(colsSet.contains(colEntry.getKey())) {
                         sliceMatrix.putValue(entry.getKey(), colEntry.getKey(), colEntry.getValue());
                     }
                 }
@@ -33,8 +33,8 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
     @Override
     public Matrix<Y, X, V> transpose() {
         MapMatrix<Y, X, V> transposeMatrix = new MapMatrix<>();
-        for (Map.Entry<X, Map<Y, V>> mapEntry : this.data.entrySet()) {
-            for (Map.Entry<Y, V> entry : mapEntry.getValue().entrySet()) {
+        for(Map.Entry<X, Map<Y, V>> mapEntry : data.entrySet()) {
+            for(Map.Entry<Y, V> entry : mapEntry.getValue().entrySet()) {
                 transposeMatrix.putValue(entry.getKey(), mapEntry.getKey(), entry.getValue());
             }
         }
@@ -43,29 +43,26 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
     
     @Override
     public V putValue(X row, Y col, V value) {
-        
-        return this.data.computeIfAbsent(row, x -> new HashMap<>()).put(col, value);
+        return data.computeIfAbsent(row, x -> new HashMap<>()).put(col, value);
     }
-    
     
     @Override
     public V getValue(X x, Y y) {
-        
-        return this.data.getOrDefault(x, new HashMap<>()).get(y);
+        return data.getOrDefault(x, new HashMap<>()).get(y);
     }
     
     @Override
     public boolean isEmpty() {
-        return this.data.isEmpty();
+        return data.isEmpty();
     }
     
     @Override
     public int size() {
-        return this.data.values().stream().mapToInt(Map::size).sum();
+        return data.values().stream().mapToInt(Map::size).sum();
     }
     
     @Override
     public void clear() {
-        this.data.clear();
+        data.clear();
     }
 }

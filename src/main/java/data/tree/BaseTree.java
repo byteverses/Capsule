@@ -9,16 +9,12 @@ public class BaseTree<ID, Value> {
     
     private TreeNode<ID, Value> root;
     
-    public boolean isEmpty() {
-        return this.root == null;
-    }
-    
     public void breadFirstTraversal(Consumer<TreeNode<ID, Value>> consumer) {
         Objects.requireNonNull(consumer);
         
         Queue<TreeNode<ID, Value>> queue = new LinkedList<>();
-        queue.offer(this.root);
-    
+        queue.offer(root);
+        
         while(!queue.isEmpty()) {
             TreeNode<ID, Value> currNode = queue.poll();
             if(currNode != null) {
@@ -31,13 +27,21 @@ public class BaseTree<ID, Value> {
     
     public void depthFirstTraversal(Consumer<TreeNode<ID, Value>> consumer) {
         Objects.requireNonNull(consumer);
-        this.depthFirstTraversal(this.root, consumer);
+        root.traversal(consumer);
     }
     
-    private void depthFirstTraversal(TreeNode<ID, Value> currNode, Consumer<TreeNode<ID, Value>> consumer) {
-        if(currNode != null) {
-            consumer.accept(currNode);
-            currNode.getChildren().forEach(child -> this.depthFirstTraversal(child, consumer));
-        }
+    public boolean isEmpty() {
+        return root == null;
     }
+    
+    @Override
+    public String toString() {
+        if(isEmpty()) {
+            return " [Empty Tree] ";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        root.flatString(stringBuilder, "|-");
+        return "Tree={" + System.lineSeparator() + stringBuilder.toString() + '}';
+    }
+    
 }

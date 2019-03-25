@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -19,17 +20,19 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
     private final V[][]                     data;
     
     public ArrayMatrix(Iterable<R> iterableRows, Iterable<C> iterableCols) {
-        this.rows = StreamSupport.stream(iterableRows.spliterator(), false)
-                                 .collect(Collectors.toCollection(LinkedList::new));
-        this.cols = StreamSupport.stream(iterableCols.spliterator(), false)
-                                 .collect(Collectors.toCollection(LinkedList::new));
-    
-        this.rowIdxes = MapUtil.mapIndex(iterableRows, LinkedHashMap::new);
-        this.colIdxes = MapUtil.mapIndex(iterableCols, LinkedHashMap::new);
-    
+        Objects.requireNonNull(iterableRows);
+        Objects.requireNonNull(iterableCols);
+        rows = StreamSupport.stream(iterableRows.spliterator(), false)
+                            .collect(Collectors.toCollection(LinkedList::new));
+        cols = StreamSupport.stream(iterableCols.spliterator(), false)
+                            .collect(Collectors.toCollection(LinkedList::new));
+        
+        rowIdxes = MapUtil.mapIndex(iterableRows, LinkedHashMap::new);
+        colIdxes = MapUtil.mapIndex(iterableCols, LinkedHashMap::new);
+        
         @SuppressWarnings("unchecked")
-        V[][] tmp = (V[][]) new Object[this.rows.size()][this.cols.size()];
-        this.data = tmp;
+        V[][] tmp = (V[][]) new Object[rows.size()][cols.size()];
+        data = tmp;
     }
     
     public ArrayMatrix<R, C, V> slice(Tuple<Integer, Integer> rowIdxRange, Tuple<Integer, Integer> colIdxRange) {
@@ -45,7 +48,7 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         ArrayMatrix<R, C, V> sliceMatrix = new ArrayMatrix<>(newRowList, newColList);
         
         for(int idx = rowStartIdx; idx < rowEndIdx; idx++) {
-            sliceMatrix.data[idx] = Arrays.copyOfRange(this.data[idx], colStartIdx, colEndIdx);
+            sliceMatrix.data[idx] = Arrays.copyOfRange(data[idx], colStartIdx, colEndIdx);
         }
         
         return sliceMatrix;
@@ -61,9 +64,9 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         
         //TODO: add index range check.
         for(R row : newRowList) {
-            Integer rowIdx = this.rowIdxes.get(row);
+            Integer rowIdx = rowIdxes.get(row);
             for(C col : newColList) {
-                Integer colIdx = this.colIdxes.get(col);
+                Integer colIdx = colIdxes.get(col);
                 sliceMatrix.data[rowIdx][colIdx] = data[rowIdx][colIdx];
             }
         }
@@ -73,44 +76,46 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
     
     @Override
     public ArrayMatrix<C, R, V> transpose() {
-        ArrayMatrix<C, R, V> transposeMatrix = new ArrayMatrix<>(new LinkedList<>(this.cols),
-                                                                 new LinkedList<>(this.rows));
-        for(int i = 0; i < this.rows.size(); i++) {
-            for(int j = 0; j < this.cols.size(); j++) {
-                transposeMatrix.data[j][i] = this.data[i][j];
+        ArrayMatrix<C, R, V> transposeMatrix = new ArrayMatrix<>(new LinkedList<>(cols), new LinkedList<>(rows));
+        for(int i = 0; i < rows.size(); i++) {
+            for(int j = 0; j < cols.size(); j++) {
+                transposeMatrix.data[j][i] = data[i][j];
             }
         }
         
         return transposeMatrix;
     }
     
-    @Override public V putValue(R row, C col, V value) {
+    @Override
+    public V putValue(R row, C col, V value) {
         //TODO: add index range check.
-        Integer rowIdx = this.rowIdxes.get(row);
-        Integer colIdx = this.colIdxes.get(col);
-        V oldValue = this.data[rowIdx][colIdx];
-        this.data[rowIdx][colIdx] = value;
+        Integer rowIdx = rowIdxes.get(row);
+        Integer colIdx = colIdxes.get(col);
+        V oldValue = data[rowIdx][colIdx];
+        data[rowIdx][colIdx] = value;
         
         return oldValue;
     }
     
-    @Override public V getValue(R r, C c) {
+    @Override
+    public V getValue(R r, C c) {
         Integer rowIdx;
         Integer colIdx;
-        return ((rowIdx = this.rowIdxes.get(r)) == null || (colIdx = this.colIdxes.get(c)) == null)
-                ? null
-                : this.data[rowIdx][colIdx];
+        return ((rowIdx = rowIdxes.get(r)) == null || (colIdx = colIdxes.get(c)) == null) ? null : data[rowIdx][colIdx];
     }
     
-    @Override public boolean isEmpty() {
-        return this.rows.isEmpty() || this.cols.isEmpty();
+    @Override
+    public boolean isEmpty() {
+        return rows.isEmpty() || cols.isEmpty();
     }
     
-    @Override public int size() {
-        return this.rows.size() * this.cols.size();
+    @Override
+    public int size() {
+        return rows.size() * cols.size();
     }
     
-    @Override public void clear() {
-        throw new UnsupportedOperationException("ArrayMatrix can't be clear! New an ArrayMatrix instead");
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("ArrayMatrix can't be clear! Create a new ArrayMatrix instead");
     }
 }

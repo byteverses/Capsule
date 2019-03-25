@@ -16,9 +16,9 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
     public List<BinaryTreeNode<ID, Value>> preOrderLoopTraversal() {
         List<BinaryTreeNode<ID, Value>> nodes = new ArrayList<>();
         Stack<BinaryTreeNode<ID, Value>> stack = new Stack<>();
-        stack.push(this.root);
+        stack.push(root);
         
-        while (!stack.isEmpty()) {
+        while(!stack.isEmpty()) {
             BinaryTreeNode<ID, Value> currNode = stack.pop();
             if(currNode != null) {
                 nodes.add(currNode);
@@ -34,9 +34,9 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
         List<BinaryTreeNode<ID, Value>> nodes = new ArrayList<>();
         Stack<BinaryTreeNode<ID, Value>> stack = new Stack<>();
         
-        BinaryTreeNode<ID, Value> currNode = this.root;
-        while (currNode != null || !stack.isEmpty()) {
-            while (currNode != null) {
+        BinaryTreeNode<ID, Value> currNode = root;
+        while(currNode != null || !stack.isEmpty()) {
+            while(currNode != null) {
                 stack.push(currNode);
                 currNode = currNode.left;
             }
@@ -52,8 +52,8 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
         LinkedList<BinaryTreeNode<ID, Value>> nodes = new LinkedList<>();
         Stack<BinaryTreeNode<ID, Value>> stack = new Stack<>();
         
-        BinaryTreeNode<ID, Value> currNode = this.root;
-        while (currNode != null || !stack.isEmpty()) {
+        BinaryTreeNode<ID, Value> currNode = root;
+        while(currNode != null || !stack.isEmpty()) {
             if(currNode != null) {
                 stack.push(currNode);
                 nodes.addFirst(currNode);
@@ -67,30 +67,30 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
     }
     
     public void preOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!this.isEmpty()) {
-            this.root.preOrderRecursiveTraversal(consumer);
-            
+        if(!isEmpty()) {
+            root.preOrderRecursiveTraversal(consumer);
         }
     }
     
     public void inOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!this.isEmpty()) {
-            this.inOrderRecursiveTraversal(consumer);
+        if(!isEmpty()) {
+            root.inOrderRecursiveTraversal(consumer);
         }
     }
     
     public void postOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!this.isEmpty()) {
-            this.postOrderRecursiveTraversal(consumer);
+        if(!isEmpty()) {
+            root.postOrderRecursiveTraversal(consumer);
         }
     }
     
-    @Override public String toString() {
-        if(this.isEmpty()) {
+    @Override
+    public String toString() {
+        if(isEmpty()) {
             return " [Empty Tree] ";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        this.root.flatString(stringBuilder, "|-");
+        root.flatString(stringBuilder, "|-");
         return "BinaryTree={" + System.lineSeparator() + stringBuilder.toString() + '}';
     }
     
