@@ -1,38 +1,60 @@
 package data.tree;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
-    private LinkedList<Hierarchy>                   hierarchy;
+    private LinkedList<Hierarchy> hierarchies;
     private HierarchyTreeNode<Hierarchy, ID, Value> root;
-    
+
     public HierarchyTree(List<Hierarchy> hierarchy) {
-        this.hierarchy = new LinkedList<>(hierarchy);
+        this.hierarchies = new LinkedList<>(hierarchy);
         this.root = new HierarchyTreeNode<>((Hierarchy) new Object(), (ID) new Object(), (Value) new Object());
     }
-    
+
+    public HierarchyTreeNode<Hierarchy, ID, Value> putValue(List<ID> hierarchyIds, Value value) {
+        HierarchyTreeNode<Hierarchy, ID, Value> node = this.addNode(hierarchyIds);
+        node.setValue(value);
+
+        return node;
+    }
+
+    public HierarchyTree<Hierarchy, ID, Value> filter(Map<Hierarchy, Collection<ID>> filters) {
+        HierarchyTree<Hierarchy, ID, Value> filterTree = new HierarchyTree<>(this.hierarchies);
+
+        Map<Hierarchy, Set<ID>> filterMap = filters.entrySet().stream().filter(entry -> entry.getValue() == null)
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          entry -> new HashSet<>(entry.getValue())));
+
+        filterTree.root = this.root.filter(filterMap);
+
+        return filterTree;
+    }
+
     private HierarchyTreeNode<Hierarchy, ID, Value> addNode(List<ID> ids) {
         HierarchyTreeNode<Hierarchy, ID, Value> currNode = this.root;
         //TODO: ID should not exceed Hierarchy
-        Iterator<Hierarchy> hierarchyIterator = hierarchy.iterator();
-        
-        
-        return null;
+        Iterator<Hierarchy> hierarchyIterator = hierarchies.iterator();
+
+        for (ID id : ids) {
+            Hierarchy hierarchy = hierarchyIterator.next();
+            currNode = currNode.getOrAddChild(hierarchy, id);
+        }
+
+        return currNode;
     }
-    
+
     @Override
     public boolean isEmpty() {
-        return this.getRoot() == null || !this.getRoot().hasChildren();
+        return this.getRoot() == null || this.getRoot().isLeaf();
     }
-    
+
     @Override
     public HierarchyTreeNode<Hierarchy, ID, Value> getRoot() {
         return this.root;
     }
-    
-    public List<Hierarchy> getHierarchy() {
-        return this.hierarchy;
+
+    public List<Hierarchy> getHierarchies() {
+        return this.hierarchies;
     }
 }

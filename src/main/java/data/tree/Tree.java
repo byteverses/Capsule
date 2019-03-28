@@ -11,11 +11,16 @@ public interface Tree<ID, Value> {
     <T extends TreeNode<ID, Value>> T getRoot();
     
     interface TreeNode<ID, Value> extends Node<ID, Value> {
+
+        ID getId();
+
+        Value getValue();
+
+        void setValue(Value value);
+
+        boolean isLeaf();
         
-        boolean hasChildren();
+        List<? extends TreeNode<ID, Value>> getChildren();
         
-        <E extends TreeNode<ID, Value>, R extends List<E>> R getChildren();
-        
-        <R extends TreeNode<ID, Value>> R getOrAddChild(ID id);
     }
 }

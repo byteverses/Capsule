@@ -66,8 +66,8 @@ public class BinaryTreeNode<ID, Value> extends BaseTreeNode<ID, Value> {
     }
     
     @Override
-    public boolean hasChildren() {
-        return this.hasLeftChild() || this.hasRightChild();
+    public boolean isLeaf() {
+        return !this.hasLeftChild() && !this.hasRightChild();
     }
     
     @Override

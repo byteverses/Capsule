@@ -16,6 +16,10 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     public BaseTreeNode() {
     }
+
+    public BaseTreeNode(ID id) {
+        this.id = id;
+    }
     
     public BaseTreeNode(ID id, Value value) {
         this.id = id;
@@ -34,11 +38,6 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     }
     
     @Override
-    public <R extends Tree.TreeNode<ID, Value>> R getOrAddChild(ID id) {
-        return null;
-    }
-    
-    @Override
     public ID getId() {
         return id;
     }
@@ -47,14 +46,19 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     public Value getValue() {
         return value;
     }
-    
+
     @Override
-    public List<BaseTreeNode<ID, Value>> getChildren() {
-        return hasChildren() ? new ArrayList<>(children.values()) : new ArrayList<>();
+    public void setValue(Value value) {
+        this.value = value;
     }
-    
+
     @Override
-    public boolean hasChildren() {
+    public List<? extends BaseTreeNode<ID, Value>> getChildren() {
+        return isLeaf() ? new ArrayList<>() : new ArrayList<>(children.values());
+    }
+
+    @Override
+    public boolean isLeaf() {
         return this.children != null && !this.children.isEmpty();
     }
     
