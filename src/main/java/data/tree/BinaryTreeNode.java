@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BinaryTreeNode<ID, Value> extends TreeNode<ID, Value> {
+public class BinaryTreeNode<ID, Value> extends BaseTreeNode<ID, Value> {
     
     protected BinaryTreeNode<ID, Value> parent;
     protected BinaryTreeNode<ID, Value> left;
     protected BinaryTreeNode<ID, Value> right;
     
     public BinaryTreeNode(ID id, Value value, BinaryTreeNode<ID, Value> parent) {
-        this.id = id;
-        this.value = value;
+        super(id, value);
         this.parent = parent;
     }
     
@@ -55,8 +54,8 @@ public class BinaryTreeNode<ID, Value> extends TreeNode<ID, Value> {
     }
     
     @Override
-    public List<TreeNode<ID, Value>> getChildren() {
-        ArrayList<TreeNode<ID, Value>> children = new ArrayList<>();
+    public List<BaseTreeNode<ID, Value>> getChildren() {
+        ArrayList<BaseTreeNode<ID, Value>> children = new ArrayList<>();
         if(this.hasLeftChild()) {
             children.add(this.left);
         }
@@ -81,16 +80,17 @@ public class BinaryTreeNode<ID, Value> extends TreeNode<ID, Value> {
                 ")}";
     }
     
-    protected void flatString(StringBuilder stringBuilder, String prefix) {
-        stringBuilder.append(prefix)
+    @Override
+    protected void flatString(StringBuilder stringBuilder, String indent) {
+        stringBuilder.append(indent)
                      .append(this.toString())
                      .append(System.lineSeparator());
-        prefix = "    " + prefix;
+        indent = "    " + indent;
         if(this.hasLeftChild()) {
-            this.left.flatString(stringBuilder, prefix);
+            this.left.flatString(stringBuilder, indent);
         }
         if(this.hasRightChild()) {
-            this.right.flatString(stringBuilder, prefix);
+            this.right.flatString(stringBuilder, indent);
         }
     }
 }

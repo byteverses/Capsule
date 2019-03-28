@@ -1,47 +1,51 @@
 package data.tree;
 
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.LinkedList;
 import java.util.function.Consumer;
 
-public class BaseTree<ID, Value> {
+public class BaseTree<ID, Value> implements Tree<ID, Value> {
     
-    private TreeNode<ID, Value> root;
+    private BaseTreeNode<ID, Value> root;
     
-    public void breadFirstTraversal(Consumer<TreeNode<ID, Value>> consumer) {
+    public void breadFirstTraversal(Consumer<BaseTreeNode<ID, Value>> consumer) {
         Objects.requireNonNull(consumer);
         
-        Queue<TreeNode<ID, Value>> queue = new LinkedList<>();
-        queue.offer(root);
+        Queue<BaseTreeNode<ID, Value>> queue = new LinkedList<>();
+        queue.offer(this.getRoot());
         
         while(!queue.isEmpty()) {
-            TreeNode<ID, Value> currNode = queue.poll();
+            BaseTreeNode<ID, Value> currNode = queue.poll();
             if(currNode != null) {
                 consumer.accept(currNode);
                 currNode.getChildren().forEach(queue::offer);
-                
             }
         }
     }
     
-    public void depthFirstTraversal(Consumer<TreeNode<ID, Value>> consumer) {
+    public void depthFirstTraversal(Consumer<BaseTreeNode<ID, Value>> consumer) {
         Objects.requireNonNull(consumer);
-        root.traversal(consumer);
+        this.getRoot().traversal(consumer);
     }
     
+    @Override
     public boolean isEmpty() {
-        return root == null;
+        return this.getRoot() == null;
     }
     
     @Override
     public String toString() {
-        if(isEmpty()) {
+        if(this.isEmpty()) {
             return " [Empty Tree] ";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        root.flatString(stringBuilder, "|-");
+        this.getRoot().flatString(stringBuilder, "|-");
         return "Tree={" + System.lineSeparator() + stringBuilder.toString() + '}';
     }
     
+    @Override
+    public BaseTreeNode<ID, Value> getRoot() {
+        return this.root;
+    }
 }

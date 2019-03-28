@@ -5,4 +5,5 @@ public interface Node<ID, Value> {
     ID getId();
     
     Value getValue();
+    
 }

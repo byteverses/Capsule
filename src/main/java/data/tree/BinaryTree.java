@@ -16,7 +16,7 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
     public List<BinaryTreeNode<ID, Value>> preOrderLoopTraversal() {
         List<BinaryTreeNode<ID, Value>> nodes = new ArrayList<>();
         Stack<BinaryTreeNode<ID, Value>> stack = new Stack<>();
-        stack.push(root);
+        stack.push(this.root);
         
         while(!stack.isEmpty()) {
             BinaryTreeNode<ID, Value> currNode = stack.pop();
@@ -34,7 +34,7 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
         List<BinaryTreeNode<ID, Value>> nodes = new ArrayList<>();
         Stack<BinaryTreeNode<ID, Value>> stack = new Stack<>();
         
-        BinaryTreeNode<ID, Value> currNode = root;
+        BinaryTreeNode<ID, Value> currNode = this.root;
         while(currNode != null || !stack.isEmpty()) {
             while(currNode != null) {
                 stack.push(currNode);
@@ -67,30 +67,35 @@ public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
     }
     
     public void preOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!isEmpty()) {
-            root.preOrderRecursiveTraversal(consumer);
+        if(!this.isEmpty()) {
+            this.root.preOrderRecursiveTraversal(consumer);
         }
     }
     
     public void inOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!isEmpty()) {
-            root.inOrderRecursiveTraversal(consumer);
+        if(!this.isEmpty()) {
+            this.root.inOrderRecursiveTraversal(consumer);
         }
     }
     
     public void postOrderRecursiveTraversal(Consumer<BinaryTreeNode<ID, Value>> consumer) {
-        if(!isEmpty()) {
-            root.postOrderRecursiveTraversal(consumer);
+        if(!this.isEmpty()) {
+            this.root.postOrderRecursiveTraversal(consumer);
         }
     }
     
     @Override
+    public BinaryTreeNode<ID, Value> getRoot() {
+        return this.root;
+    }
+    
+    @Override
     public String toString() {
-        if(isEmpty()) {
+        if(this.isEmpty()) {
             return " [Empty Tree] ";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        root.flatString(stringBuilder, "|-");
+        this.root.flatString(stringBuilder, "|-");
         return "BinaryTree={" + System.lineSeparator() + stringBuilder.toString() + '}';
     }
     
