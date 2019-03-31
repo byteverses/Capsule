@@ -11,7 +11,6 @@ public class BaseTreeNodeTest {
     public void getChildren() {
         BaseTreeNode<Integer, Integer> basetreeNode = new BaseTreeNode<Integer, Integer>();
     
-        List<BaseTreeNode<Integer, Integer>> children = basetreeNode.getChildren();
     }
     
 }

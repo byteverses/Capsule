@@ -19,16 +19,18 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
         return node;
     }
 
-    public HierarchyTree<Hierarchy, ID, Value> filter(Map<Hierarchy, Collection<ID>> filters) {
-        HierarchyTree<Hierarchy, ID, Value> filterTree = new HierarchyTree<>(this.hierarchies);
+    public HierarchyTreeNode<Hierarchy, ID, Value> findNode(List<ID> hierarchyIds) {
+        HierarchyTreeNode<Hierarchy, ID, Value> currNode = this.root;
 
-        Map<Hierarchy, Set<ID>> filterMap = filters.entrySet().stream().filter(entry -> entry.getValue() == null)
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                                          entry -> new HashSet<>(entry.getValue())));
+        for (ID hierarchyId : hierarchyIds) {
+            HierarchyTreeNode<Hierarchy, ID, Value> childNode = currNode.getChild(hierarchyId);
+            if(childNode == null) {
+                return null;
+            }
+            currNode = childNode;
+        }
 
-        filterTree.root = this.root.filter(filterMap);
-
-        return filterTree;
+        return currNode;
     }
 
     private HierarchyTreeNode<Hierarchy, ID, Value> addNode(List<ID> ids) {
@@ -42,6 +44,18 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
         }
 
         return currNode;
+    }
+
+    public HierarchyTree<Hierarchy, ID, Value> filter(Map<Hierarchy, Collection<ID>> filters) {
+        HierarchyTree<Hierarchy, ID, Value> filterTree = new HierarchyTree<>(this.hierarchies);
+
+        Map<Hierarchy, Set<ID>> filterMap = filters.entrySet().stream().filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        entry -> new HashSet<>(entry.getValue())));
+
+        filterTree.root = this.root.filter(filterMap);
+
+        return filterTree;
     }
 
     @Override

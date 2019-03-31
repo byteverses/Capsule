@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Value> {
     private Hierarchy hierarchy;
 
-    private Map<ID, HierarchyTreeNode<Hierarchy, ID, Value>> children;
+    private Map<ID, HierarchyTreeNode<Hierarchy, ID, Value>> children = new HashMap<>();
 
     public HierarchyTreeNode(Hierarchy hierarchy, ID id) {
         super(id);
@@ -32,6 +32,7 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Va
         HierarchyTreeNode<Hierarchy, ID, Value> childNode = this.getChild(id);
         if (childNode == null) {
             childNode = new HierarchyTreeNode<>(hierarchy, id);
+            this.addChild(childNode);
         }
         return childNode;
     }
@@ -40,8 +41,12 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Va
         HierarchyTreeNode<Hierarchy, ID, Value> node = new HierarchyTreeNode<>(this.hierarchy, this.id, this.value);
         if (!this.isLeaf()) {
             Set<ID> filterIds = filters.getOrDefault(this.hierarchy, this.children.keySet());
-            this.children.values().stream().filter(childNode -> filterIds.contains(childNode.getId()))
-                    .forEach(childNode -> node.addChild(childNode.filter(filters)));
+            for (HierarchyTreeNode<Hierarchy, ID, Value> childNode : this.children.values()) {
+                if (filterIds.contains(childNode.getId())) {
+                    HierarchyTreeNode<Hierarchy, ID, Value> filterNode = childNode.filter(filters);
+                    node.addChild(filterNode);
+                }
+            }
         }
 
         return node;
@@ -57,10 +62,14 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Va
         return this.children == null || this.children.isEmpty();
     }
 
+    public Hierarchy getHierarchy() {
+        return this.hierarchy;
+    }
+
     @Override
     public String toString() {
         List<ID> childrenIds = getChildren().stream().map(BaseTreeNode::getId).collect(Collectors.toList());
-        return "HierarchyTreeNode{" + "hierarchy=" + hierarchy + "id=" + id + ", value=" + value + ", children=" + childrenIds + ")}";
+        return "HierarchyTreeNode{" + "hierarchy=" + hierarchy + ", id=" + id + ", value=" + value + ", children=" + childrenIds + ")}";
     }
 
     @Override
