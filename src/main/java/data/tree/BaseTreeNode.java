@@ -16,7 +16,7 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     public BaseTreeNode() {
     }
-
+    
     public BaseTreeNode(ID id) {
         this.id = id;
     }
@@ -46,17 +46,17 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     public Value getValue() {
         return value;
     }
-
+    
     @Override
     public void setValue(Value value) {
         this.value = value;
     }
-
+    
     @Override
     public List<? extends BaseTreeNode<ID, Value>> getChildren() {
         return isLeaf() ? new ArrayList<>() : new ArrayList<>(children.values());
     }
-
+    
     @Override
     public boolean isLeaf() {
         return this.children != null && !this.children.isEmpty();
@@ -64,8 +64,11 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     @Override
     public String toString() {
-        List<ID> childrenIds = getChildren().stream().map(BaseTreeNode::getId).collect(Collectors.toList());
-        return "BinaryTreeNode{" + "id=" + id + ", value=" + value + ", children=" + childrenIds + ")}";
+        String childrenIds = getChildren().stream()
+                                          .map(BaseTreeNode::getId)
+                                          .map(String::valueOf)
+                                          .collect(Collectors.joining(", "));
+        return "BinaryTreeNode{" + "id = " + id + ", value = " + value + ", children = [" + childrenIds + "])}";
     }
     
     protected void flatString(StringBuilder stringBuilder, String indent) {
