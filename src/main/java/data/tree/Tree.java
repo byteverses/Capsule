@@ -12,8 +12,10 @@ public interface Tree<ID, Value> {
     
     interface TreeNode<ID, Value> extends Node<ID, Value> {
 
+        @Override
         ID getId();
 
+        @Override
         Value getValue();
 
         void setValue(Value value);

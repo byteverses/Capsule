@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -64,15 +65,15 @@ public class MODI {
         // 2. solve this equation.
         while (leftSupplyIdxes.size() < supply.length || leftDemandIdxes.size() < demand.length) {
             this.optimizedResults.forEach((key, value) -> {
-                Integer supply = key.getX();
-                Integer demand = key.getY();
-                if (!leftSupplyIdxes.contains(supply) && leftDemandIdxes.contains(demand)) {
-                    row[supply] = this.cost[supply][demand] - col[demand];
-                    leftSupplyIdxes.add(supply);
+                Integer supplyIdx = key.getX();
+                Integer demandIdx = key.getY();
+                if (!leftSupplyIdxes.contains(supplyIdx) && leftDemandIdxes.contains(demandIdx)) {
+                    row[supplyIdx] = this.cost[supplyIdx][demandIdx] - col[demandIdx];
+                    leftSupplyIdxes.add(supplyIdx);
                 }
-                if (leftSupplyIdxes.contains(supply) && !leftDemandIdxes.contains(demand)) {
-                    col[demand] = this.cost[supply][demand] - row[supply];
-                    leftDemandIdxes.add(demand);
+                if (leftSupplyIdxes.contains(supplyIdx) && !leftDemandIdxes.contains(demandIdx)) {
+                    col[demandIdx] = this.cost[supplyIdx][demandIdx] - row[supplyIdx];
+                    leftDemandIdxes.add(demandIdx);
                 }
             });
         }
@@ -114,23 +115,24 @@ public class MODI {
         Stack<Tuple<Integer, Integer>> closedPath = this.findClosedLoopPath(negativePosition, rowPositions, colPositions);
         
         if (!closedPath.isEmpty()) {
-            
-            Tuple<Integer, Integer> minPosition = IntStream.range(1, closedPath.size())
-                                                           .filter(i -> i % 2 == 1)
-                                                           .mapToObj(closedPath::get)
-                                                           .min(Comparator.comparing(this.optimizedResults::get))
-                                                           .get();
-            double minAssign = this.optimizedResults.get(minPosition);
-            this.optimizedResults.put(negativePosition, minAssign);
-            IntStream.range(1, closedPath.size())
-                     .forEach(index -> this.optimizedResults.merge(closedPath.get(index),
-                                                                   index % 2 == 1 ? -minAssign : minAssign,
-                                                                   Double::sum));
-            
-            this.optimizedResults.remove(minPosition);
-            
-            return true;
-            
+    
+            Optional<Tuple<Integer, Integer>> min = IntStream.range(1, closedPath.size())
+                                                             .filter(i -> i % 2 == 1)
+                                                             .mapToObj(closedPath::get)
+                                                             .min(Comparator.comparing(this.optimizedResults::get));
+            if(min.isPresent()) {
+                Tuple<Integer, Integer> minPosition = min.get();
+                double minAssign = this.optimizedResults.get(minPosition);
+                this.optimizedResults.put(negativePosition, minAssign);
+                IntStream.range(1, closedPath.size())
+                         .forEach(index -> this.optimizedResults.merge(closedPath.get(index),
+                                                                       index % 2 == 1 ? -minAssign : minAssign,
+                                                                       Double::sum));
+    
+                this.optimizedResults.remove(minPosition);
+                
+                return true;
+            }
         }
         
         return false;

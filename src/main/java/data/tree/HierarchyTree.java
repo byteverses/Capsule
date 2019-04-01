@@ -15,7 +15,6 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
     
     public HierarchyTree(List<Hierarchy> hierarchy) {
         this.hierarchies = new LinkedList<>(hierarchy);
-//        this.root = new HierarchyTreeNode<>((Hierarchy) new Object(), (ID) new Object(), (Value) new Object());
         this.root = new HierarchyTreeNode<>();
     }
     
