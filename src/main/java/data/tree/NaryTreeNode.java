@@ -7,32 +7,32 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
+public class NaryTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     protected ID    id;
     protected Value value;
     
-    private Map<ID, BaseTreeNode<ID, Value>> children;
+    private Map<ID, NaryTreeNode<ID, Value>> children;
     
-    public BaseTreeNode() {
+    public NaryTreeNode() {
     }
     
-    public BaseTreeNode(ID id) {
+    public NaryTreeNode(ID id) {
         this.id = id;
     }
     
-    public BaseTreeNode(ID id, Value value) {
-        this.id = id;
-        this.value = value;
-    }
-    
-    public BaseTreeNode(ID id, Value value, List<BaseTreeNode<ID, Value>> children) {
+    public NaryTreeNode(ID id, Value value) {
         this.id = id;
         this.value = value;
-        this.children = children.stream().collect(Collectors.toMap(BaseTreeNode::getId, Function.identity()));
     }
     
-    protected void traversal(Consumer<BaseTreeNode<ID, Value>> consumer) {
+    public NaryTreeNode(ID id, Value value, List<NaryTreeNode<ID, Value>> children) {
+        this.id = id;
+        this.value = value;
+        this.children = children.stream().collect(Collectors.toMap(NaryTreeNode::getId, Function.identity()));
+    }
+    
+    protected void traversal(Consumer<NaryTreeNode<ID, Value>> consumer) {
         consumer.accept(this);
         getChildren().forEach(child -> traversal(consumer));
     }
@@ -53,7 +53,7 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     }
     
     @Override
-    public List<? extends BaseTreeNode<ID, Value>> getChildren() {
+    public List<? extends NaryTreeNode<ID, Value>> getChildren() {
         return isLeaf() ? new ArrayList<>() : new ArrayList<>(children.values());
     }
     
@@ -65,7 +65,7 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     @Override
     public String toString() {
         String childrenIds = getChildren().stream()
-                                          .map(BaseTreeNode::getId)
+                                          .map(NaryTreeNode::getId)
                                           .map(String::valueOf)
                                           .collect(Collectors.joining(", "));
         return "BinaryTreeNode{" + "id = " + id + ", value = " + value + ", children = [" + childrenIds + "])}";
@@ -75,7 +75,7 @@ public class BaseTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
         stringBuilder.append(indent).append(this.toString()).append(System.lineSeparator());
         indent = "    " + indent;
         
-        for(BaseTreeNode<ID, Value> childNode : this.getChildren()) {
+        for(NaryTreeNode<ID, Value> childNode : this.getChildren()) {
             childNode.flatString(stringBuilder, indent);
         }
     }

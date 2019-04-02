@@ -6,10 +6,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
-public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
+public class HierarchyTree<Hierarchy, ID, Value> extends NaryTree<ID, Value> {
     private LinkedList<Hierarchy>                   hierarchies;
     private HierarchyTreeNode<Hierarchy, ID, Value> root;
     
@@ -25,7 +27,17 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
         return node;
     }
     
+    public HierarchyTreeNode<Hierarchy, ID, Value> putValue(List<ID> hierarchyIds,
+                                                            Value value,
+                                                            BinaryOperator<Value> valueMergger) {
+        HierarchyTreeNode<Hierarchy, ID, Value> node = this.addNode(hierarchyIds);
+        node.setValue(valueMergger.apply(node.value, value));
+        
+        return node;
+    }
+    
     public HierarchyTreeNode<Hierarchy, ID, Value> findNode(List<ID> hierarchyIds) {
+        Objects.requireNonNull(hierarchyIds);
         HierarchyTreeNode<Hierarchy, ID, Value> currNode = this.root;
         
         for(ID hierarchyId : hierarchyIds) {
@@ -40,6 +52,7 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
     }
     
     private HierarchyTreeNode<Hierarchy, ID, Value> addNode(List<ID> ids) {
+        Objects.requireNonNull(ids);
         HierarchyTreeNode<Hierarchy, ID, Value> currNode = this.root;
         //TODO: ID should not exceed Hierarchy
         Iterator<Hierarchy> hierarchyIterator = hierarchies.iterator();
@@ -53,6 +66,7 @@ public class HierarchyTree<Hierarchy, ID, Value> extends BaseTree<ID, Value> {
     }
     
     public HierarchyTree<Hierarchy, ID, Value> filter(Map<Hierarchy, Collection<ID>> filters) {
+        Objects.requireNonNull(filters);
         HierarchyTree<Hierarchy, ID, Value> filterTree = new HierarchyTree<>(this.hierarchies);
         
         Map<Hierarchy, Set<ID>> filterMap = filters.entrySet()

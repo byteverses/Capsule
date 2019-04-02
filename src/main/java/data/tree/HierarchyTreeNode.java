@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Value> {
+public class HierarchyTreeNode<Hierarchy, ID, Value> extends NaryTreeNode<ID, Value> {
     private Hierarchy                                        hierarchy;
     private int                                              depth    = 0;
     private HierarchyTreeNode<Hierarchy, ID, Value>          parent;
@@ -90,7 +90,7 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Va
     @Override
     public String toString() {
         String childrenIds = getChildren().stream()
-                                          .map(BaseTreeNode::getId)
+                                          .map(NaryTreeNode::getId)
                                           .map(String::valueOf)
                                           .collect(Collectors.joining(", "));
         return "HierarchyTreeNode{" + "hierarchy = " + hierarchy + ", id = " + id + ", value=" + value + ", children = [" + childrenIds + "])}";
@@ -101,7 +101,7 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends BaseTreeNode<ID, Va
         stringBuilder.append(indent).append(this.toString()).append(System.lineSeparator());
         indent = "    " + indent;
         
-        for(BaseTreeNode<ID, Value> childNode : this.getChildren()) {
+        for(NaryTreeNode<ID, Value> childNode : this.getChildren()) {
             childNode.flatString(stringBuilder, indent);
         }
     }

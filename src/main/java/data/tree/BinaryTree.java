@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-public class BinaryTree<ID, Value> extends BaseTree<ID, Value> {
+public class BinaryTree<ID, Value> extends NaryTree<ID, Value> {
     
     private BinaryTreeNode<ID, Value> root;
     

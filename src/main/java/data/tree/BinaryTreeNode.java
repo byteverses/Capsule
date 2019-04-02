@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BinaryTreeNode<ID, Value> extends BaseTreeNode<ID, Value> {
+public class BinaryTreeNode<ID, Value> extends NaryTreeNode<ID, Value> {
     
     protected BinaryTreeNode<ID, Value> parent;
     protected BinaryTreeNode<ID, Value> left;
@@ -54,8 +54,8 @@ public class BinaryTreeNode<ID, Value> extends BaseTreeNode<ID, Value> {
     }
     
     @Override
-    public List<BaseTreeNode<ID, Value>> getChildren() {
-        ArrayList<BaseTreeNode<ID, Value>> children = new ArrayList<>();
+    public List<NaryTreeNode<ID, Value>> getChildren() {
+        ArrayList<NaryTreeNode<ID, Value>> children = new ArrayList<>();
         if(this.hasLeftChild()) {
             children.add(this.left);
         }
