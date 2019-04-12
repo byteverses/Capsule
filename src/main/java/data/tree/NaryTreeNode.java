@@ -34,7 +34,9 @@ public class NaryTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     protected void traversal(Consumer<NaryTreeNode<ID, Value>> consumer) {
         consumer.accept(this);
-        getChildren().forEach(child -> traversal(consumer));
+        for(NaryTreeNode<ID, Value> child : getChildren()) {
+            child.traversal(consumer);
+        }
     }
     
     @Override
