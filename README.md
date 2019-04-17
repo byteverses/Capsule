@@ -1,0 +1,3 @@
+# Capsule
+
+A Code Capsule
