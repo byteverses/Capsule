@@ -40,7 +40,7 @@ public class NaryTree<ID, Value> implements Tree<ID, Value> {
             return " [Empty Tree] ";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        this.getRoot().flatString(stringBuilder, "|-");
+        this.getRoot().flatToString(stringBuilder, "|-");
         return "Tree={" + System.lineSeparator() + stringBuilder.toString() + '}';
     }
     

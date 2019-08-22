@@ -97,12 +97,12 @@ public class HierarchyTreeNode<Hierarchy, ID, Value> extends NaryTreeNode<ID, Va
     }
     
     @Override
-    protected void flatString(StringBuilder stringBuilder, String indent) {
+    protected void flatToString(StringBuilder stringBuilder, String indent) {
         stringBuilder.append(indent).append(this.toString()).append(System.lineSeparator());
         indent = "    " + indent;
         
         for(NaryTreeNode<ID, Value> childNode : this.getChildren()) {
-            childNode.flatString(stringBuilder, indent);
+            childNode.flatToString(stringBuilder, indent);
         }
     }
     

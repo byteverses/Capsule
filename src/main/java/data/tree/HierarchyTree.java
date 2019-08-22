@@ -29,9 +29,9 @@ public class HierarchyTree<Hierarchy, ID, Value> extends NaryTree<ID, Value> {
     
     public HierarchyTreeNode<Hierarchy, ID, Value> putValue(List<ID> hierarchyIds,
                                                             Value value,
-                                                            BinaryOperator<Value> valueMergger) {
+                                                            BinaryOperator<Value> valueMerger) {
         HierarchyTreeNode<Hierarchy, ID, Value> node = this.addNode(hierarchyIds);
-        node.setValue(valueMergger.apply(node.value, value));
+        node.setValue(valueMerger.apply(node.value, value));
         
         return node;
     }
@@ -67,7 +67,7 @@ public class HierarchyTree<Hierarchy, ID, Value> extends NaryTree<ID, Value> {
     
     public HierarchyTree<Hierarchy, ID, Value> filter(Map<Hierarchy, Collection<ID>> filters) {
         Objects.requireNonNull(filters);
-        HierarchyTree<Hierarchy, ID, Value> filterTree = new HierarchyTree<>(this.hierarchies);
+        HierarchyTree<Hierarchy, ID, Value> filteredTree = new HierarchyTree<>(this.hierarchies);
         
         Map<Hierarchy, Set<ID>> filterMap = filters.entrySet()
                                                    .stream()
@@ -75,9 +75,9 @@ public class HierarchyTree<Hierarchy, ID, Value> extends NaryTree<ID, Value> {
                                                    .collect(Collectors.toMap(Map.Entry::getKey,
                                                                              entry -> new HashSet<>(entry.getValue())));
         
-        filterTree.root = this.root.filter(filterMap);
+        filteredTree.root = this.root.filter(filterMap);
         
-        return filterTree;
+        return filteredTree;
     }
     
     @Override

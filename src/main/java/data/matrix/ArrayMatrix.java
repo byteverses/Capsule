@@ -64,10 +64,12 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         
         //TODO: add index range check.
         for(R row : newRowList) {
+            int sliceRowIdx = sliceMatrix.rowIdxes.get(row);
             Integer rowIdx = rowIdxes.get(row);
             for(C col : newColList) {
+                int sliceColIdx = sliceMatrix.colIdxes.get(col);
                 Integer colIdx = colIdxes.get(col);
-                sliceMatrix.data[rowIdx][colIdx] = data[rowIdx][colIdx];
+                sliceMatrix.data[sliceRowIdx][sliceColIdx] = data[rowIdx][colIdx];
             }
         }
         
@@ -110,7 +112,7 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
     }
     
     @Override
-    public int size() {
+    public int totalSize() {
         return rows.size() * cols.size();
     }
     

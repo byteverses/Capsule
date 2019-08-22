@@ -43,6 +43,6 @@ public class ArrayMatrixTest {
     }
     
     @Test public void size() {
-        Assert.assertTrue(arrayMatrix.size() == rows.size() * cols.size());
+        Assert.assertTrue(arrayMatrix.totalSize() == rows.size() * cols.size());
     }
 }

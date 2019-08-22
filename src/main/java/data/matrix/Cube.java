@@ -27,7 +27,7 @@ public interface Cube<X, Y, Z, V> {
     
     boolean isEmpty();
     
-    int size();
+    int totalSize();
     
     @Override
     boolean equals(Object obj);

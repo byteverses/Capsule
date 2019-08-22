@@ -73,12 +73,12 @@ public class NaryTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
         return "BinaryTreeNode{" + "id = " + id + ", value = " + value + ", children = [" + childrenIds + "])}";
     }
     
-    protected void flatString(StringBuilder stringBuilder, String indent) {
+    protected void flatToString(StringBuilder stringBuilder, String indent) {
         stringBuilder.append(indent).append(this.toString()).append(System.lineSeparator());
         indent = "    " + indent;
         
         for(NaryTreeNode<ID, Value> childNode : this.getChildren()) {
-            childNode.flatString(stringBuilder, indent);
+            childNode.flatToString(stringBuilder, indent);
         }
     }
     

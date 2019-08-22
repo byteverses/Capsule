@@ -24,7 +24,7 @@ public class MapCube<X, Y, Z, V> implements Cube<X, Y, Z, V> {
     }
     
     @Override
-    public int size() {
+    public int totalSize() {
         return data.values().stream().map(Map::values).flatMap(Collection::stream).mapToInt(Map::size).sum();
     }
 }

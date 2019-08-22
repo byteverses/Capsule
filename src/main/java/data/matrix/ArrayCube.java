@@ -64,7 +64,7 @@ public class ArrayCube<X, Y, Z, V> implements Cube<X, Y, Z, V> {
     }
     
     @Override
-    public int size() {
+    public int totalSize() {
         return xs.size() * ys.size() * zs.size();
     }
 }

@@ -18,7 +18,7 @@ public interface Matrix<X, Y, V> {
     
     boolean isEmpty();
     
-    int size();
+    int totalSize();
     
     void clear();
     

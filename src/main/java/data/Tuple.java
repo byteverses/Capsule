@@ -6,6 +6,8 @@ public final class Tuple<X, Y> {
     private final X x;
     private final Y y;
     
+    private int hash;
+    
     public Tuple(X key, Y value) {
         this.x = key;
         this.y = value;
@@ -21,17 +23,24 @@ public final class Tuple<X, Y> {
     
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         Tuple<?, ?> tuple = (Tuple<?, ?>) o;
         return Objects.equals(x, tuple.x) && Objects.equals(y, tuple.y);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        int h = hash;
+        if(h == 0) {
+            h = Objects.hash(x, y);
+            hash = h;
+        }
+        return h;
     }
     
     @Override

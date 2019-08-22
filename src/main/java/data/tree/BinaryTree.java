@@ -95,7 +95,7 @@ public class BinaryTree<ID, Value> extends NaryTree<ID, Value> {
             return " [Empty Tree] ";
         }
         StringBuilder stringBuilder = new StringBuilder();
-        this.root.flatString(stringBuilder, "|-");
+        this.root.flatToString(stringBuilder, "|-");
         return "BinaryTree={" + System.lineSeparator() + stringBuilder.toString() + '}';
     }
     

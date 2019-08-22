@@ -81,16 +81,16 @@ public class BinaryTreeNode<ID, Value> extends NaryTreeNode<ID, Value> {
     }
     
     @Override
-    protected void flatString(StringBuilder stringBuilder, String indent) {
+    protected void flatToString(StringBuilder stringBuilder, String indent) {
         stringBuilder.append(indent)
                      .append(this.toString())
                      .append(System.lineSeparator());
         indent = "    " + indent;
         if(this.hasLeftChild()) {
-            this.left.flatString(stringBuilder, indent);
+            this.left.flatToString(stringBuilder, indent);
         }
         if(this.hasRightChild()) {
-            this.right.flatString(stringBuilder, indent);
+            this.right.flatToString(stringBuilder, indent);
         }
     }
 }

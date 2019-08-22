@@ -57,7 +57,7 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
     }
     
     @Override
-    public int size() {
+    public int totalSize() {
         return data.values().stream().mapToInt(Map::size).sum();
     }
     
