@@ -4,6 +4,8 @@ import data.Tuple;
 
 public class ArrayUtil {
     
+    private ArrayUtil(){}
+    
     /**
      * @param array
      * @return Tuple.x is index; Tuple.y is value

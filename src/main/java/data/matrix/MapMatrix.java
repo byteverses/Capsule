@@ -2,7 +2,6 @@ package data.matrix;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
@@ -14,14 +13,14 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
         MapMatrix<X, Y, V> sliceMatrix = new MapMatrix<>();
         
         //TODO: add index range check.
-        HashSet<X> rowsSet = new HashSet<>(rows);
-        HashSet<Y> colsSet = new HashSet<>(cols);
         
-        for(Map.Entry<X, Map<Y, V>> entry : data.entrySet()) {
-            if(rowsSet.contains(entry.getKey())) {
-                for(Map.Entry<Y, V> colEntry : entry.getValue().entrySet()) {
-                    if(colsSet.contains(colEntry.getKey())) {
-                        sliceMatrix.putValue(entry.getKey(), colEntry.getKey(), colEntry.getValue());
+        for(X row : rows) {
+            Map<Y, V> yvMap = this.data.get(row);
+            if(yvMap != null) {
+                for(Y col : cols) {
+                    V v = yvMap.get(col);
+                    if(v != null) {
+                        sliceMatrix.putValue(row, col, v);
                     }
                 }
             }

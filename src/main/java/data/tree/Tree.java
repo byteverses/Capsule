@@ -22,7 +22,7 @@ public interface Tree<ID, Value> {
 
         boolean isLeaf();
         
-        List<? extends TreeNode<ID, Value>> getChildren();
+        <E extends TreeNode<ID, Value>> List<E> getChildren();
         
     }
 }

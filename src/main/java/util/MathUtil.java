@@ -2,6 +2,8 @@ package util;
 
 public class MathUtil {
     
+    private MathUtil(){}
+    
     public static double devsq(double[] data) {
         
         double sum = 0.0;

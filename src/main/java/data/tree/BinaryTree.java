@@ -11,6 +11,7 @@ public class BinaryTree<ID, Value> extends NaryTree<ID, Value> {
     private BinaryTreeNode<ID, Value> root;
     
     public BinaryTree() {
+    
     }
     
     public List<BinaryTreeNode<ID, Value>> preOrderLoopTraversal() {
