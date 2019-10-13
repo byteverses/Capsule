@@ -14,17 +14,17 @@ import static org.apache.spark.sql.functions.col;
 
 public class SparkUtil {
     
-    public static <E> scala.collection.Seq toScalaSeq(Iterator<E> iter) {
+    public static <E> scala.collection.Seq<E> toScalaSeq(Iterator<E> iter) {
         
         return JavaConverters.asScalaIterator(iter).toSeq();
     }
     
-    public static <E> scala.collection.Seq toScalaSeq(List<E> elements) {
+    public static <E> scala.collection.Seq<E> toScalaSeq(List<E> elements) {
         
         return toScalaSeq(elements.iterator());
     }
     
-    public static <E> scala.collection.Seq toScalaSeq(E... elements) {
+    public static <E> scala.collection.Seq<E> toScalaSeq(E... elements) {
         
         return toScalaSeq(Arrays.asList(elements));
     }
@@ -38,22 +38,21 @@ public class SparkUtil {
         
         while(!joinColumns.isEmpty()) {
             Column nextCol = joinColumns.pop();
-            first.and(nextCol);
+            first = first.and(nextCol);
         }
         
         return first;
     }
     
-    public static Column joinExprs(Tuple2<String, String>... joinExprsCols) {
-      
-        LinkedList<Column> joinColumns = Arrays.stream(joinExprsCols)
+    public static Column joinExprs(Tuple2<String, String>... joinCols) {
+        LinkedList<Column> joinColumns = Arrays.stream(joinCols)
                                                .map(joinCol -> col(joinCol._1.trim()).equalTo(col(joinCol._2.trim())))
                                                .collect(Collectors.toCollection(LinkedList::new));
         Column first = joinColumns.pop();
         
         while(!joinColumns.isEmpty()) {
             Column nextCol = joinColumns.pop();
-            first.and(nextCol);
+            first = first.and(nextCol);
         }
         
         return first;
