@@ -61,7 +61,7 @@ public class NaryTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
     
     @Override
     public boolean isLeaf() {
-        return this.children != null && !this.children.isEmpty();
+        return this.children == null || this.children.isEmpty();
     }
     
     @Override
@@ -70,7 +70,7 @@ public class NaryTreeNode<ID, Value> implements Tree.TreeNode<ID, Value> {
                                           .map(NaryTreeNode::getId)
                                           .map(String::valueOf)
                                           .collect(Collectors.joining(", "));
-        return "BinaryTreeNode{" + "id = " + id + ", value = " + value + ", children = [" + childrenIds + "])}";
+        return "NaryTreeNode{" + "id = " + id + ", value = " + value + ", children = [" + childrenIds + "])}";
     }
     
     protected void flatToString(StringBuilder stringBuilder, String indent) {
