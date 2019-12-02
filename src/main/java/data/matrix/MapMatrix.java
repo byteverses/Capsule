@@ -15,10 +15,10 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
         //TODO: add index range check.
         
         for(X row : rows) {
-            Map<Y, V> yvMap = this.data.get(row);
-            if(yvMap != null) {
+            Map<Y, V> colVals = this.data.get(row);
+            if(colVals != null) {
                 for(Y col : cols) {
-                    V v = yvMap.get(col);
+                    V v = colVals.get(col);
                     if(v != null) {
                         sliceMatrix.putValue(row, col, v);
                     }
@@ -46,13 +46,8 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
     }
     
     @Override
-    public V getValue(X x, Y y) {
-        return data.getOrDefault(x, new HashMap<>()).get(y);
-    }
-    
-    @Override
-    public boolean isEmpty() {
-        return data.isEmpty();
+    public V getValue(X row, Y col) {
+        return data.getOrDefault(row, new HashMap<>()).get(col);
     }
     
     @Override
@@ -60,8 +55,4 @@ public class MapMatrix<X, Y, V> implements Matrix<X, Y, V> {
         return data.values().stream().mapToInt(Map::size).sum();
     }
     
-    @Override
-    public void clear() {
-        data.clear();
-    }
 }

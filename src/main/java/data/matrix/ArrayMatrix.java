@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -88,6 +89,41 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         return transposeMatrix;
     }
     
+    /****************************************
+     *  Matrix Manipulation
+     ***************************************
+     */
+    public ArrayMatrix<R, C, V> plus(ArrayMatrix<R, C, V> other,
+                                     BiFunction<V, V, V> plus,
+                                     BiFunction<V, V, V> multiply) {
+        ArrayMatrix<R, C, V> plusMatrix = new ArrayMatrix<>(new LinkedList<>(this.rows), new LinkedList<>(this.cols));
+        for(int i = 0; i < this.rows.size(); i++) {
+            for(int j = 0; j < other.cols.size(); j++) {
+                plusMatrix.data[i][j] = plus.apply(other.data[i][j], this.data[i][j]);
+            }
+        }
+        return plusMatrix;
+    }
+    
+    public ArrayMatrix<R, C, V> multiply(ArrayMatrix<R, C, V> other,
+                                         BiFunction<V, V, V> plus,
+                                         BiFunction<V, V, V> multiply) {
+        ArrayMatrix<R, C, V> multiplyMatrix = new ArrayMatrix<>(new LinkedList<>(this.rows),
+                                                                new LinkedList<>(other.cols));
+    
+        for(int i = 0; i < this.rows.size(); i++) {
+            for(int j = 0; j < other.cols.size(); j++) {
+                V val = multiply.apply(this.data[i][0], other.data[0][j]);
+                for(int k = 1; k < this.rows.size(); k++) {
+                    val = plus.apply(val, multiply.apply(this.data[i][k], other.data[k][j]));
+                }
+                multiplyMatrix.data[i][j] = val;
+            }
+        }
+    
+        return multiplyMatrix;
+    }
+    
     @Override
     public V putValue(R row, C col, V value) {
         //TODO: add index range check.
@@ -100,13 +136,13 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
     }
     
     @Override
-    public V getValue(R r, C c) {
+    public V getValue(R row, C col) {
         Integer rowIdx;
         Integer colIdx;
-        return ((rowIdx = rowIdxes.get(r)) == null || (colIdx = colIdxes.get(c)) == null) ? null : data[rowIdx][colIdx];
+        return ((rowIdx = rowIdxes.get(row)) == null || (colIdx = colIdxes.get(col)) == null) ? null
+                                                                                              : data[rowIdx][colIdx];
     }
     
-    @Override
     public boolean isEmpty() {
         return rows.isEmpty() || cols.isEmpty();
     }
@@ -116,8 +152,4 @@ public class ArrayMatrix<R, C, V> implements Matrix<R, C, V> {
         return rows.size() * cols.size();
     }
     
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("ArrayMatrix can't be clear! Create a new ArrayMatrix instead");
-    }
 }

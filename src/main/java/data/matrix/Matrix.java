@@ -14,13 +14,9 @@ public interface Matrix<X, Y, V> {
      */
     V putValue(X row, Y col, V newValue);
     
-    V getValue(X x, Y y);
-    
-    boolean isEmpty();
+    V getValue(X row, Y col);
     
     int totalSize();
-    
-    void clear();
     
     @Override
     boolean equals(Object obj);
