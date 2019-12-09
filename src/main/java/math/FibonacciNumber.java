@@ -65,7 +65,11 @@ public class FibonacciNumber {
         
         return (long) val;
     }
-    
+
+    /**
+     * Solution 4: Matrix manipulation
+     * Time complexity: O(log(n))
+     */
     public long matrixFormulaResolve(long n) {
         
         long[][] result = {{1, 0}, {0, 1}};
