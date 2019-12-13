@@ -23,4 +23,28 @@ public class ArrayUtil {
         }
         return new Tuple<>(minIdx, minValue);
     }
+
+    public static void swap(int[] array, int idxA, int idxB) {
+        int temp = array[idxA];
+        array[idxA] = array[idxB];
+        array[idxB] = temp;
+    }
+
+    public static void swap(double[] array, int idxA, int idxB) {
+        double temp = array[idxA];
+        array[idxA] = array[idxB];
+        array[idxB] = temp;
+    }
+
+    public static void swap(long[] array, int idxA, int idxB) {
+        long temp = array[idxA];
+        array[idxA] = array[idxB];
+        array[idxB] = temp;
+    }
+
+    public static <T> void swap(T[] array, int idxA, int idxB) {
+        T temp = array[idxA];
+        array[idxA] = array[idxB];
+        array[idxB] = temp;
+    }
 }

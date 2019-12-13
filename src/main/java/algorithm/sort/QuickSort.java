@@ -1,6 +1,6 @@
 package algorithm.sort;
 
-import java.util.Arrays;
+import static util.ArrayUtil.swap;
 
 public class QuickSort {
 
@@ -8,13 +8,11 @@ public class QuickSort {
         if (start > end) {
             return;
         }
-
         int left = start;
         int right = end;
         int mark = nums[start];
 
         while (left < right) {
-
             while (left < right && nums[right] >= mark) {
                 right--;
             }
@@ -22,12 +20,9 @@ public class QuickSort {
                 left++;
             }
             if (left < right) {
-                int tmp = nums[left];
-                nums[left] = nums[right];
-                nums[right] = tmp;
+                swap(nums, left, right);
             }
         }
-
         nums[start] = nums[left];
         nums[left] = mark;
 
@@ -35,9 +30,4 @@ public class QuickSort {
         quickSort(nums, left + 1, end);
     }
 
-    public static void main(String[] args) {
-        int[] nums = {1, 3, 2};
-        quickSort(nums, 0, nums.length - 1);
-        System.out.println("Arrays.toString(nums) = " + Arrays.toString(nums));
-    }
 }
