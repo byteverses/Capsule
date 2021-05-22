@@ -92,16 +92,14 @@ public class MODI {
         
         return negativePositions.entrySet()
                                 .stream()
-                                .sorted(Comparator.comparing(Map.Entry::getValue))
+                                .sorted(Map.Entry.comparingByValue())
                                 .map(Map.Entry::getKey)
                                 .collect(Collectors.toList());
     }
     
     private boolean optimizeNegativePosition(Tuple<Integer, Integer> negativePosition) {
         
-        Set<Tuple<Integer, Integer>> assignPositions = this.optimizedResults.keySet()
-                                                                            .stream()
-                                                                            .collect(Collectors.toSet());
+        Set<Tuple<Integer, Integer>> assignPositions = new HashSet<>(this.optimizedResults.keySet());
         // add current negative position
         assignPositions.add(negativePosition);
         

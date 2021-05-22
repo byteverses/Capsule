@@ -3,6 +3,10 @@ package util;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MathUtilTest {
     
     @Test
@@ -12,5 +16,8 @@ public class MathUtilTest {
     
         double[] array = {5,5,5,5,5};
         Assert.assertEquals(MathUtil.devsq(array), 0.0, 0.0);
+
+        List<Character> characters = Arrays.asList('a', 'b');
+
     }
 }

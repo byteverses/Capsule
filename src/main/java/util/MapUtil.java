@@ -1,5 +1,7 @@
 package util;
 
+import com.google.common.collect.Streams;
+
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -23,5 +25,8 @@ public class MapUtil {
             mapIndex.put(idx++, element);
         }
         return mapIndex;
+    }
+
+    public static void main(String[] args) {
     }
 }
